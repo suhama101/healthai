@@ -1,0 +1,43 @@
+# Bind the API to the host's loopback interface. A separately approved private
+# network gateway provides HTTPS and authenticates access to the service.
+services:
+  inference:
+    build: .
+    image: medilens-research
+    init: true
+    restart: unless-stopped
+    cpus: 4.0
+    mem_limit: 4g
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      PORT: "8000"
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      MEDILENS_VERIFY_RELEASE: "1"
+      MEDILENS_ALLOWED_ORIGINS: https://healthai-lyart.vercel.app
+      MEDILENS_ALLOWED_HOSTS: "127.0.0.1,${MEDILENS_RESTRICTED_HOST:?Set the approved HTTPS gateway hostname}"
+    volumes:
+      - type: bind
+        source: "${MEDILENS_RELEASE_CACHE:?Set the absolute path to the verified release-only cache}"
+        target: /app/.medilens
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import json,sys,urllib.request; r=json.load(urllib.request.urlopen('http://127.0.0.1:8000/health',timeout=2)); sys.exit(0 if r.get('status')=='ready' and r.get('method')=='clip-ridge' and r.get('version')=='3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268' else 1)"
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 90s

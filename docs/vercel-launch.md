@@ -1,5 +1,7 @@
 # Vercel launch
 
+The [existing Vercel frontend](https://healthai-lyart.vercel.app/) has been verified in preview-only mode. Use the [restricted inference plan](restricted-inference.md) for any future backend connection. The import steps below are a reference for setting up a replacement.
+
 ## Create the MediLens AI project
 
 1. Sign in to the existing authorized Vercel account and select the intended team or personal scope. Open [New Project](https://vercel.com/new) and import [suhama101/healthai](https://github.com/suhama101/healthai). If the repository is missing, grant the Vercel GitHub integration access to this specific repository.
@@ -26,4 +28,4 @@ Render lists a 2 CPU / 4 GB plan at $85/month and disk at $0.25/GB/month. A 2 GB
 
 ## Release verification
 
-Lint, typecheck, the standard production build, and all 19 Python tests passed. The frozen weights, selection, and fitted coefficients passed integrity checks. Chrome exercised navigation across all five routes at 375, 768, and 1440 pixels. The offline session returned real scores and disabled Analyze after FastAPI stopped. With the API variable unset, the local static export previewed an image, displayed the unavailable status, kept Analyze disabled, and made no external requests. Hosted browser verification requires a confirmed deployment URL.
+Lint, typecheck, the standard production build, and all 19 Python tests passed. The frozen weights, selection, and fitted coefficients passed integrity checks. Chrome exercised navigation across all five routes at 375, 768, and 1440 pixels. The offline session returned real scores and disabled Analyze after FastAPI stopped. With the API variable unset, the local static export previewed an image, displayed the unavailable status, kept Analyze disabled, and made no external requests. The [Step 6 plan](restricted-inference.md) records verification of the live preview.
