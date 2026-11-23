@@ -8,7 +8,7 @@ export default function WorkspacePage() {
   return (
     <>
       <PageIntro label="Research workspace" title="AI Screening Workspace">
-        Preview a de-identified microscopy cell crop and analyze it with the local CLIP research baseline.
+        Preview a de-identified microscopy cell crop and analyze it with the locally selected research method.
       </PageIntro>
       <div className="container inner-content">
         <ScreeningWorkspace />

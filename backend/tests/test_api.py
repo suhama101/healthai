@@ -1,26 +1,30 @@
-import json
 from zipfile import ZipFile
 
 from fastapi.testclient import TestClient
 import pytest
 
 from backend.api import app
-from backend.assets import ARCHIVE, DATASET_DIR, LABELS, MODEL_DIR, MODEL_ID, MODEL_REVISION, WEIGHTS
-from backend.dataset import MANIFEST
+from backend.assets import ARCHIVE, DATASET_DIR, LABELS
 from backend.images import MAX_IMAGE_BYTES
+from backend.step3_models import MODEL_DETAILS, RIDGE_METHODS
+from backend.step3_protocol import PROTOCOL, SELECTION, partition, read_json
 
 
 @pytest.fixture(scope="module")
 def client():
-    if not (MODEL_DIR / WEIGHTS).is_file():
-        pytest.skip("Download the pinned weights to run real API tests.")
+    if not SELECTION.is_file():
+        pytest.skip("Run Step 3 validation to test the real selected service.")
     with TestClient(app, base_url="http://127.0.0.1") as connected:
         yield connected
 
 
 def test_ready_and_restricted_cors(client):
+    selection = read_json(SELECTION)
+    model, version = MODEL_DETAILS[selection["family"]]
     health = client.get("/health").json()
-    assert health == {"status": "ready", "protocol": "medilens-clip-v1", "model": MODEL_ID, "version": MODEL_REVISION}
+    assert health["status"] == "ready" and health["protocol"] == "medilens-clip-v1"
+    assert (health["model"], health["version"], health["method"]) == (model, version, selection["selected"])
+    assert selection["selected"] in health["methods"]
     assert client.get("/health", headers={"Host": "unapproved.example"}).status_code == 400
     for origin, expected in [("http://localhost:3000", 200), ("https://unknown.example", 400)]:
         response = client.options("/predict", headers={
@@ -33,6 +37,7 @@ def test_ready_and_restricted_cors(client):
 def test_rejects_unsupported_invalid_and_oversized(client):
     assert client.post("/predict", content=b"text", headers={"Content-Type": "text/plain"}).status_code == 415
     png = {"Content-Type": "image/png"}
+    assert client.post("/predict?method=unavailable", content=b"text", headers=png).status_code == 422
     assert client.post("/predict", content=b"text", headers=png).status_code == 422
     assert client.post("/predict", content=b"", headers=png).status_code == 422
     assert client.post("/predict", content=b"data", headers={**png, "Content-Length": str(MAX_IMAGE_BYTES + 1)}).status_code == 413
@@ -40,29 +45,43 @@ def test_rejects_unsupported_invalid_and_oversized(client):
                        headers={**png, "Content-Length": "1"}).status_code == 413
 
 
-def test_real_model_scores_public_labeled_images(client):
-    if not MANIFEST.is_file():
-        pytest.skip("Build the official dataset manifest to run this test.")
-    rows = [json.loads(line) for line in MANIFEST.read_text(encoding="utf-8").splitlines()]
+def test_busy_service_rejects_while_health_stays_ready(client):
+    slot = app.state.inference_slot
+    client.portal.call(slot.acquire)
+    try:
+        assert client.get("/health").json()["status"] == "ready"
+        assert client.post("/predict", content=b"image", headers={"Content-Type": "image/png"}).status_code == 503
+    finally:
+        client.portal.call(slot.release)
+
+
+def test_selected_model_uses_real_development_images(client, tmp_path, monkeypatch):
+    if not PROTOCOL.is_file():
+        pytest.skip("Prepare the official dataset manifest for this test.")
+    monkeypatch.chdir(tmp_path)
+    health = client.get("/health").json()
+    rows = partition("development", read_json(PROTOCOL))
     headers = {"Content-Type": "image/png"}
-    responses = []
+    predicted = set()
+    score_vectors = set()
     with ZipFile(DATASET_DIR / ARCHIVE) as archive:
         for label in LABELS:
-            row = next(row for row in rows if row["split"] == "development" and row["label"] == label)
-            data = archive.read(row["member"])
-            baseline = client.post("/predict", content=data, headers=headers)
-            guided = client.post("/predict?method=knowledge-guided", content=data, headers=headers)
-            assert baseline.status_code == guided.status_code == 200
-            assert baseline.json() == client.post("/predict", content=data, headers=headers).json()
-            primary, experiment = baseline.json(), guided.json()
-            assert primary["method"] == "class-name"
-            assert experiment["method"] == "knowledge-guided"
-            assert experiment["baseline"]["predictedClass"] == primary["predictedClass"]
-            for result in (primary, experiment):
-                values = result["scores"]["values"]
-                assert result["model"] == {"name": MODEL_ID, "version": MODEL_REVISION}
-                assert result["scores"]["kind"] == "model_score"
-                assert set(values) == set(LABELS) and all(-1 <= score <= 1 for score in values.values())
-                assert result["predictedClass"] == max(values, key=values.get)
-            responses.append(primary["scores"]["values"])
-    assert responses[0] != responses[1]
+            examples = [row for row in rows if row["label"] == label][:6]
+            for index, row in enumerate(examples):
+                data = archive.read(row["member"])
+                response = client.post("/predict", content=data, headers=headers)
+                assert response.status_code == 200
+                result = response.json()
+                if index == 0:
+                    assert result == client.post("/predict", content=data, headers=headers).json()
+                assert result["method"] == health["method"]
+                assert result["model"] == {"name": health["model"], "version": health["version"]}
+                scores = result["scores"]
+                assert scores["kind"] == "model_score"
+                assert list(scores["values"]) == list(LABELS)
+                assert "ridge" in scores["label"].lower() if health["method"] in RIDGE_METHODS else "cosine" in scores["label"]
+                assert result["predictedClass"] == max(scores["values"], key=scores["values"].get)
+                predicted.add(result["predictedClass"])
+                score_vectors.add(tuple(scores["values"].values()))
+    assert predicted == set(LABELS) and len(score_vectors) > 2
+    assert not list(tmp_path.iterdir())

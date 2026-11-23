@@ -8,13 +8,14 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
+from PIL import Image
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel
 from starlette.requests import ClientDisconnect
 
-from backend.assets import MODEL_ID, MODEL_REVISION
-from backend.clip_model import ClipClassifier, METHOD_NAMES, Method, ResearchClass
+from backend.clip_model import METHOD_NAMES, ResearchClass
 from backend.images import FORMATS, MAX_IMAGE_BYTES, ImageError, decode_image
+from backend.step3_models import DemoModel, RIDGE_METHODS
 
 LOGGER = logging.getLogger("uvicorn.error")
 PROTOCOL = "medilens-clip-v1"
@@ -39,18 +40,26 @@ class BaselineDetails(ModelDetails):
 
 class Prediction(BaseModel):
     predictedClass: ResearchClass
-    method: Method
+    method: str
     model: ModelDetails
     scores: ScoreDetails
     limitations: list[str]
     baseline: BaselineDetails | None = None
 
 
+def load_ready_model():
+    classifier = DemoModel()
+    with Image.new("RGB", (224, 224)) as warmup:
+        classifier.predict(warmup, (classifier.method,))
+    return classifier
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.classifier = await run_in_threadpool(ClipClassifier)
+    classifier = await run_in_threadpool(load_ready_model)
+    app.state.classifier = classifier
     app.state.inference_slot = asyncio.Lock()
-    LOGGER.info("Loaded %s at %s on %s", MODEL_ID, MODEL_REVISION, app.state.classifier.device)
+    LOGGER.info("Loaded %s at %s using %s", classifier.model_id, classifier.revision, classifier.method)
     yield
 
 
@@ -63,8 +72,10 @@ app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1
 
 
 @app.get("/health")
-async def health():
-    return {"status": "ready", "protocol": PROTOCOL, "model": MODEL_ID, "version": MODEL_REVISION}
+async def health(request: Request):
+    classifier: DemoModel = request.app.state.classifier
+    return {"status": "ready", "protocol": PROTOCOL, "model": classifier.model_id,
+            "version": classifier.revision, "method": classifier.method, "methods": classifier.methods}
 
 
 async def read_image(request: Request) -> bytes:
@@ -83,7 +94,11 @@ async def read_image(request: Request) -> bytes:
 
 
 @app.post("/predict", response_model=Prediction, response_model_exclude_none=True)
-async def predict(request: Request, method: Method = "class-name"):
+async def predict(request: Request, method: str | None = None):
+    classifier: DemoModel = request.app.state.classifier
+    method = method if method is not None else classifier.method
+    if method not in classifier.methods:
+        raise HTTPException(422, "The requested method is not available on the loaded model.")
     content_type = request.headers.get("content-type", "").split(";", 1)[0].strip().lower()
     if content_type not in FORMATS:
         raise HTTPException(415, "Send an image with Content-Type image/jpeg or image/png.")
@@ -96,30 +111,30 @@ async def predict(request: Request, method: Method = "class-name"):
         raise HTTPException(503, "The model is processing another image. Try again shortly.")
 
     def classify(contents: bytes) -> Prediction:
-        classifier: ClipClassifier = request.app.state.classifier
         with decode_image(contents, content_type) as image:
-            methods = ("class-name", "knowledge-guided") if method == "knowledge-guided" else ("class-name",)
-            predictions = classifier.predict([image], methods)
-        result = predictions[method][0]
+            methods = ("class-name", "knowledge-guided") if method == "knowledge-guided" else (method,)
+            predictions = classifier.predict(image, methods)
+        result = predictions[method]
         baseline = None
         if method == "knowledge-guided":
             baseline = BaselineDetails(
-                name=METHOD_NAMES["class-name"], version=MODEL_REVISION,
-                predictedClass=predictions["class-name"][0].label,
+                name=METHOD_NAMES["class-name"], version=classifier.revision,
+                predictedClass=predictions["class-name"].label,
             )
         limitations = [
             DISCLAIMER,
-            "This general-purpose CLIP model always selects one of two cell classes.",
-            "The cosine similarities are uncalibrated model scores.",
+            "The model always selects one of two cell classes.",
+            "The relative scores are uncalibrated.",
             "The prototype has limited cell-level evaluation and no clinical validation.",
         ]
-        if method == "knowledge-guided":
-            limitations.append("The experimental prompts identified 7 of 128 labeled parasitized crops in the initial held-out sample.")
-        else:
-            limitations.append("This baseline predicted parasitized for all 256 crops in the initial held-out sample.")
+        score_label = "Image–text cosine similarity"
+        if method in RIDGE_METHODS:
+            score_label = "Uncalibrated ridge model score"
+            limitations.append("The supervised ridge head was fitted to labeled NLM development crops with the encoder frozen.")
         return Prediction(
-            predictedClass=result.label, method=method, model=ModelDetails(name=MODEL_ID, version=MODEL_REVISION),
-            scores=ScoreDetails(values=result.scores), limitations=limitations, baseline=baseline,
+            predictedClass=result.label, method=method,
+            model=ModelDetails(name=classifier.model_id, version=classifier.revision),
+            scores=ScoreDetails(label=score_label, values=result.scores), limitations=limitations, baseline=baseline,
         )
 
     async with slot:

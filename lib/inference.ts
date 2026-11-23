@@ -1,9 +1,16 @@
 export type ResearchClass = "parasitized" | "uninfected";
-export type ResearchMethod = "class-name" | "knowledge-guided";
+export type ResearchMethod =
+  | "class-name" | "knowledge-guided" | "clip-ensemble" | "clip-ridge"
+  | "biomed-class-name" | "biomed-ensemble" | "biomed-ridge";
 
 export const methodLabels: Record<ResearchMethod, string> = {
   "class-name": "Class-name CLIP baseline",
   "knowledge-guided": "Knowledge-guided CLIP prompt experiment",
+  "clip-ensemble": "CLIP morphology prompt ensemble · zero-shot",
+  "clip-ridge": "CLIP frozen encoder · supervised ridge",
+  "biomed-class-name": "BiomedCLIP class-name prompts · zero-shot",
+  "biomed-ensemble": "BiomedCLIP morphology prompt ensemble · zero-shot",
+  "biomed-ridge": "BiomedCLIP frozen encoder · supervised ridge",
 };
 
 export type ClassScores =
@@ -68,7 +75,7 @@ function isPrediction(value: unknown): value is PredictionResponse {
   if (!isRecord(value)) return false;
   const { predictedClass, method, model, limitations, scores, baseline } = value;
   return isResearchClass(predictedClass)
-    && (method === "class-name" || method === "knowledge-guided")
+    && typeof method === "string" && Object.hasOwn(methodLabels, method)
     && isModel(model)
     && Array.isArray(limitations) && limitations.length > 0 && limitations.every(isText)
     && (scores === undefined || isScores(scores))
@@ -125,7 +132,7 @@ export function createInferenceService(baseUrl: string | undefined): InferenceSe
         const detail = isRecord(data) && isText(data.detail) ? data.detail : null;
         throw new InferenceError(detail ?? "The model could not analyze this image. Try again.");
       }
-      if (!isPrediction(data) || data.method !== "class-name" || data.scores?.kind !== "model_score") {
+      if (!isPrediction(data) || data.scores?.kind !== "model_score") {
         throw new InferenceError("The service returned an invalid model response.");
       }
       return data;

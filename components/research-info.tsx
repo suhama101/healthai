@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export const workflow = [
   { title: "Upload an image", description: "Select a de-identified JPEG or PNG of a microscopic cell.", icon: Upload },
   { title: "Validate and prepare", description: "The workspace checks the file and displays a preview. The local model service applies CLIP preprocessing.", icon: ScanLine },
-  { title: "Run the model", description: "Select Analyze when the local service is ready. CLIP compares the image with the two research class prompts.", icon: Workflow },
+  { title: "Run the model", description: "Select Analyze when the local service is ready. The selected research method scores the crop against two cell classes.", icon: Workflow },
   { title: "Review the result", description: "Inspect the research class, model details, and limitations returned by the connected service.", icon: FlaskConical },
 ];
 

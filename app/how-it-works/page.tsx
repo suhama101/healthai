@@ -8,7 +8,7 @@ export default function HowItWorks() {
   return (
     <>
       <PageIntro label="Screening workflow" title="How It Works">
-        Follow the path from a single cell image to a research classification. Run the local CLIP service to enable Analyze.
+        Follow the path from a single cell image to a research classification. Run the local inference service to enable Analyze.
       </PageIntro>
       <div className="container inner-content">
         <ol className="step-grid">

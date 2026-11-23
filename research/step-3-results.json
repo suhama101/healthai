@@ -1,0 +1,1159 @@
+{
+  "historical_audit": {
+    "class-name": {
+      "confirmed": true,
+      "parasite_minus_uninfected": {
+        "min": 0.0047231316566467285,
+        "median": 0.010352998971939087,
+        "max": 0.01787799596786499
+      },
+      "parasitized_predictions": 256
+    },
+    "knowledge-guided": {
+      "confirmed": true,
+      "parasite_minus_uninfected": {
+        "min": -0.049534872174263,
+        "median": -0.019349992275238037,
+        "max": 0.008227407932281494
+      },
+      "parasitized_predictions": 13
+    }
+  },
+  "protocol": {
+    "seed": "medilens-step3-split-v1",
+    "source_manifest_sha256": "ee9b684910710414018632dfc826d7067a238e76888373ba28d58ac4fc6c9fa7",
+    "inputs_sha256": {
+      "cell_images.zip": "0a949556b2414159b5100192609805376654c4266d8d187be9b1922fad43c668",
+      "patientid_cellmapping_parasitized.csv": "d0367e513397404e980baee2a641bce9ce329a22e62ea9007962dfca2f8418d3",
+      "patientid_cellmapping_uninfected.csv": "a8577b21e7154724f4bbd18326218e2c63a99b22ab372b79a7530d36df6dab78"
+    },
+    "quarantined_groups": 36,
+    "quarantined_crops": 5647,
+    "partitions": {
+      "development": {
+        "population_class_counts": {
+          "parasitized": 6588,
+          "uninfected": 6867
+        },
+        "population_groups": 100,
+        "sample_class_counts": {
+          "parasitized": 384,
+          "uninfected": 384
+        },
+        "sample_groups": 100,
+        "sample_sha256": "1741c03e8b3ac985ba7bda5f784b602d1a7416235b0c780c63f24b0b59a50b87"
+      },
+      "validation": {
+        "population_class_counts": {
+          "parasitized": 2755,
+          "uninfected": 2203
+        },
+        "population_groups": 32,
+        "sample_class_counts": {
+          "parasitized": 128,
+          "uninfected": 128
+        },
+        "sample_groups": 32,
+        "sample_sha256": "99056586d5e9928e1dc969df5f0db7fc0cca4a55ca4734d60c4bcf9cc76ae305"
+      },
+      "test": {
+        "population_class_counts": {
+          "parasitized": 1316,
+          "uninfected": 2182
+        },
+        "population_groups": 32,
+        "sample_class_counts": {
+          "parasitized": 192,
+          "uninfected": 192
+        },
+        "sample_groups": 32,
+        "sample_sha256": "203a3ced94450ef44c1c8ff46e2aa7298924e0717393cd0cff300132e52f7b93"
+      }
+    },
+    "methods": {
+      "clip": [
+        "class-name",
+        "knowledge-guided",
+        "clip-ensemble",
+        "clip-ridge"
+      ],
+      "biomed": [
+        "biomed-class-name",
+        "biomed-ensemble",
+        "biomed-ridge"
+      ]
+    },
+    "prompt_version": "cell-morphology-v1",
+    "prompts": [
+      [
+        "A Giemsa-stained thin blood smear showing a parasitized red blood cell.",
+        "A thin blood smear crop of a red cell with a small delicate intracellular parasite ring.",
+        "A stained red blood cell containing a malaria parasite with visible chromatin."
+      ],
+      [
+        "A Giemsa-stained thin blood smear showing an uninfected red blood cell.",
+        "A thin blood smear crop of a red cell with no visible intracellular parasite.",
+        "A stained red blood cell with pale cytoplasm and no visible parasite structures."
+      ]
+    ],
+    "ridge_penalty": 0.001,
+    "selection_rule": [
+      "minimum class recall",
+      "balanced accuracy",
+      "macro F1",
+      "lower median single-image latency"
+    ]
+  },
+  "selection": {
+    "selected": "clip-ridge",
+    "family": "clip",
+    "rank": [
+      0.890625,
+      0.89453125,
+      0.8945296406500344,
+      -139.62625000203843
+    ],
+    "protocol_sha256": "51eab103354a2ee205ecd28ebb8fb7b5195f258a48e190244154779baafbd10d",
+    "head_sha256": {
+      "clip": "01189869ca5b57b48fd16ac82ff711b5ac77687df257c14fa62d60514b2e79ca",
+      "biomed": "87620656b0457fbe947a7508dcca9299b971a1e28d18326ecbc4ff4375925035"
+    },
+    "validation_sha256": {
+      "clip": "b192c94b220542a249dfa678598aa23218379f9d2b2ff06e9fe2a8e69b037262",
+      "biomed": "387c6b74a42848de5400e828c28b6f5e97ddf8596528d021aa789ad800fbc0ba"
+    }
+  },
+  "execution": {
+    "python": "3.12.10",
+    "platform": "Windows",
+    "cpu_threads": 4,
+    "packages": {
+      "torch": "2.14.0",
+      "torchvision": "0.29.0",
+      "transformers": "4.57.6",
+      "open-clip-torch": "3.2.0",
+      "timm": "1.0.29",
+      "psutil": "7.2.2"
+    }
+  },
+  "labels": [
+    "parasitized",
+    "uninfected"
+  ],
+  "validation": {
+    "clip": {
+      "checkpoint": {
+        "id": "openai/clip-vit-base-patch32",
+        "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+        "sha256": "a63082132ba4f97a80bea76823f544493bffa8082296d62d71581a4feff1576f"
+      },
+      "runtime": {
+        "initialization_s": 15.277463599995826,
+        "rss_before_mib": 29.66015625,
+        "warmed_rss_mib": 856.37109375,
+        "process_peak_working_set_mib": 886.08203125,
+        "encoder_parameters": 151277313,
+        "head_parameters": 1026,
+        "device": "cpu",
+        "torch": "2.14.0+cpu",
+        "latency": {
+          "class-name": {
+            "median_ms": 137.10920000085025,
+            "p95_ms": 147.15805499945418
+          },
+          "knowledge-guided": {
+            "median_ms": 143.33369999803836,
+            "p95_ms": 154.90752000514476
+          },
+          "clip-ensemble": {
+            "median_ms": 141.78134999747272,
+            "p95_ms": 154.3659100017976
+          },
+          "clip-ridge": {
+            "median_ms": 139.62625000203843,
+            "p95_ms": 153.29083999968134
+          }
+        }
+      },
+      "validation": {
+        "class-name": {
+          "n": 256,
+          "accuracy": 0.5,
+          "balanced_accuracy": 0.5,
+          "macro_f1": 0.3333333333333333,
+          "per_class": {
+            "parasitized": {
+              "precision": 0.5,
+              "recall": 1.0,
+              "f1": 0.6666666666666666
+            },
+            "uninfected": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            }
+          },
+          "confusion_matrix": [
+            [
+              128,
+              0
+            ],
+            [
+              128,
+              0
+            ]
+          ],
+          "prediction_counts": {
+            "parasitized": 256,
+            "uninfected": 0
+          },
+          "failure_examples": {
+            "parasitized": [],
+            "uninfected": [
+              {
+                "image_sha256": "90c58c47fb16883bf0ad098380fbc7971c9f8c91705ed38811756045d84a4a4e",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.323901891708374,
+                  "uninfected": 0.3143237233161926
+                }
+              },
+              {
+                "image_sha256": "31388fdc73c74b09dfa8d26cd36164f776f69f8a5c981c6e1823db35e2880440",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.31709054112434387,
+                  "uninfected": 0.30511876940727234
+                }
+              }
+            ]
+          }
+        },
+        "knowledge-guided": {
+          "n": 256,
+          "accuracy": 0.5,
+          "balanced_accuracy": 0.5,
+          "macro_f1": 0.3708141321044547,
+          "per_class": {
+            "parasitized": {
+              "precision": 0.5,
+              "recall": 0.046875,
+              "f1": 0.08571428571428572
+            },
+            "uninfected": {
+              "precision": 0.5,
+              "recall": 0.953125,
+              "f1": 0.6559139784946236
+            }
+          },
+          "confusion_matrix": [
+            [
+              6,
+              122
+            ],
+            [
+              6,
+              122
+            ]
+          ],
+          "prediction_counts": {
+            "parasitized": 12,
+            "uninfected": 244
+          },
+          "failure_examples": {
+            "parasitized": [
+              {
+                "image_sha256": "6939de7085c28f3b7640046f505bc99789797214d1b08a2f1b77d02976b6f6b5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.23639515042304993,
+                  "uninfected": 0.2690606117248535
+                }
+              },
+              {
+                "image_sha256": "f6a73f6cd119cb5b5175dc51a48c1802b361a9bead08eebad266d6f911f7a4e5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.26527342200279236,
+                  "uninfected": 0.3062838315963745
+                }
+              }
+            ],
+            "uninfected": [
+              {
+                "image_sha256": "9c578290a914e6f5d6c3c02a3380ee11bd89533e4259b1493c718e8f17d8b5b2",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.2988561987876892,
+                  "uninfected": 0.29773932695388794
+                }
+              },
+              {
+                "image_sha256": "11462881772da4b775534aecd5fd6f12695e354f74924c215038fc60723b6685",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.27615588903427124,
+                  "uninfected": 0.2729980945587158
+                }
+              }
+            ]
+          }
+        },
+        "clip-ensemble": {
+          "n": 256,
+          "accuracy": 0.51171875,
+          "balanced_accuracy": 0.51171875,
+          "macro_f1": 0.4374813226220402,
+          "per_class": {
+            "parasitized": {
+              "precision": 0.5067873303167421,
+              "recall": 0.875,
+              "f1": 0.6418338108882522
+            },
+            "uninfected": {
+              "precision": 0.5428571428571428,
+              "recall": 0.1484375,
+              "f1": 0.2331288343558282
+            }
+          },
+          "confusion_matrix": [
+            [
+              112,
+              16
+            ],
+            [
+              109,
+              19
+            ]
+          ],
+          "prediction_counts": {
+            "parasitized": 221,
+            "uninfected": 35
+          },
+          "failure_examples": {
+            "parasitized": [
+              {
+                "image_sha256": "6939de7085c28f3b7640046f505bc99789797214d1b08a2f1b77d02976b6f6b5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.30146360397338867,
+                  "uninfected": 0.30530646443367004
+                }
+              },
+              {
+                "image_sha256": "f6a73f6cd119cb5b5175dc51a48c1802b361a9bead08eebad266d6f911f7a4e5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.3023630678653717,
+                  "uninfected": 0.3028814494609833
+                }
+              }
+            ],
+            "uninfected": [
+              {
+                "image_sha256": "90c58c47fb16883bf0ad098380fbc7971c9f8c91705ed38811756045d84a4a4e",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.341497004032135,
+                  "uninfected": 0.33021819591522217
+                }
+              },
+              {
+                "image_sha256": "d0301d3b7d66c86a516c83203edc6caca57802c2934a032ed379eed209b90842",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.2907732129096985,
+                  "uninfected": 0.287990540266037
+                }
+              }
+            ]
+          }
+        },
+        "clip-ridge": {
+          "n": 256,
+          "accuracy": 0.89453125,
+          "balanced_accuracy": 0.89453125,
+          "macro_f1": 0.8945296406500344,
+          "per_class": {
+            "parasitized": {
+              "precision": 0.8976377952755905,
+              "recall": 0.890625,
+              "f1": 0.8941176470588236
+            },
+            "uninfected": {
+              "precision": 0.8914728682170543,
+              "recall": 0.8984375,
+              "f1": 0.8949416342412452
+            }
+          },
+          "confusion_matrix": [
+            [
+              114,
+              14
+            ],
+            [
+              13,
+              115
+            ]
+          ],
+          "prediction_counts": {
+            "parasitized": 127,
+            "uninfected": 129
+          },
+          "failure_examples": {
+            "parasitized": [
+              {
+                "image_sha256": "6939de7085c28f3b7640046f505bc99789797214d1b08a2f1b77d02976b6f6b5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.07678771664439274,
+                  "uninfected": 0.9232122833556072
+                }
+              },
+              {
+                "image_sha256": "f90f245334809137124055b24f077cd0b3790d810db176209e0dae6d1ececc10",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.16097547187982864,
+                  "uninfected": 0.8390245281201714
+                }
+              }
+            ],
+            "uninfected": [
+              {
+                "image_sha256": "90c58c47fb16883bf0ad098380fbc7971c9f8c91705ed38811756045d84a4a4e",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.6001809235724676,
+                  "uninfected": 0.39981907642753245
+                }
+              },
+              {
+                "image_sha256": "d0301d3b7d66c86a516c83203edc6caca57802c2934a032ed379eed209b90842",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.5726649654219375,
+                  "uninfected": 0.42733503457806254
+                }
+              }
+            ]
+          }
+        }
+      },
+      "protocol_sha256": "51eab103354a2ee205ecd28ebb8fb7b5195f258a48e190244154779baafbd10d",
+      "head_sha256": "01189869ca5b57b48fd16ac82ff711b5ac77687df257c14fa62d60514b2e79ca",
+      "native_clip_cosine_max_abs_delta": 5.960464477539063e-08
+    },
+    "biomed": {
+      "checkpoint": {
+        "id": "microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224",
+        "revision": "9f341de24bfb00180f1b847274256e9b65a3a32e",
+        "sha256": "52cc993c5c5ff962bd0c60931874bc001e7e9b41666a385530f4a036294576be"
+      },
+      "runtime": {
+        "initialization_s": 23.19866159999947,
+        "rss_before_mib": 28.0625,
+        "warmed_rss_mib": 1086.33203125,
+        "process_peak_working_set_mib": 1143.25,
+        "encoder_parameters": 195902721,
+        "head_parameters": 1026,
+        "device": "cpu",
+        "torch": "2.14.0+cpu",
+        "latency": {
+          "biomed-class-name": {
+            "median_ms": 400.821850002103,
+            "p95_ms": 733.6794400012877
+          },
+          "biomed-ensemble": {
+            "median_ms": 400.8296499996504,
+            "p95_ms": 649.8923299968737
+          },
+          "biomed-ridge": {
+            "median_ms": 419.7383999999147,
+            "p95_ms": 457.33166999889363
+          }
+        }
+      },
+      "validation": {
+        "biomed-class-name": {
+          "n": 256,
+          "accuracy": 0.49609375,
+          "balanced_accuracy": 0.49609375,
+          "macro_f1": 0.33159268929503916,
+          "per_class": {
+            "parasitized": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0
+            },
+            "uninfected": {
+              "precision": 0.4980392156862745,
+              "recall": 0.9921875,
+              "f1": 0.6631853785900783
+            }
+          },
+          "confusion_matrix": [
+            [
+              0,
+              128
+            ],
+            [
+              1,
+              127
+            ]
+          ],
+          "prediction_counts": {
+            "parasitized": 1,
+            "uninfected": 255
+          },
+          "failure_examples": {
+            "parasitized": [
+              {
+                "image_sha256": "6939de7085c28f3b7640046f505bc99789797214d1b08a2f1b77d02976b6f6b5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.3228567838668823,
+                  "uninfected": 0.3775526285171509
+                }
+              },
+              {
+                "image_sha256": "f6a73f6cd119cb5b5175dc51a48c1802b361a9bead08eebad266d6f911f7a4e5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.4381520450115204,
+                  "uninfected": 0.4692723751068115
+                }
+              }
+            ],
+            "uninfected": [
+              {
+                "image_sha256": "19d49ca0c8f6fcc13e8e0db45d1dfe1c3b447b1faea5b42335d9dcb85fc54ad2",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.2893592119216919,
+                  "uninfected": 0.28336092829704285
+                }
+              }
+            ]
+          }
+        },
+        "biomed-ensemble": {
+          "n": 256,
+          "accuracy": 0.5078125,
+          "balanced_accuracy": 0.5078125,
+          "macro_f1": 0.350463149416029,
+          "per_class": {
+            "parasitized": {
+              "precision": 1.0,
+              "recall": 0.015625,
+              "f1": 0.03076923076923077
+            },
+            "uninfected": {
+              "precision": 0.5039370078740157,
+              "recall": 1.0,
+              "f1": 0.6701570680628273
+            }
+          },
+          "confusion_matrix": [
+            [
+              2,
+              126
+            ],
+            [
+              0,
+              128
+            ]
+          ],
+          "prediction_counts": {
+            "parasitized": 2,
+            "uninfected": 254
+          },
+          "failure_examples": {
+            "parasitized": [
+              {
+                "image_sha256": "6939de7085c28f3b7640046f505bc99789797214d1b08a2f1b77d02976b6f6b5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.3223659098148346,
+                  "uninfected": 0.36203378438949585
+                }
+              },
+              {
+                "image_sha256": "f6a73f6cd119cb5b5175dc51a48c1802b361a9bead08eebad266d6f911f7a4e5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.4309424161911011,
+                  "uninfected": 0.452086865901947
+                }
+              }
+            ],
+            "uninfected": []
+          }
+        },
+        "biomed-ridge": {
+          "n": 256,
+          "accuracy": 0.90625,
+          "balanced_accuracy": 0.90625,
+          "macro_f1": 0.906158357771261,
+          "per_class": {
+            "parasitized": {
+              "precision": 0.9333333333333333,
+              "recall": 0.875,
+              "f1": 0.9032258064516129
+            },
+            "uninfected": {
+              "precision": 0.8823529411764706,
+              "recall": 0.9375,
+              "f1": 0.9090909090909091
+            }
+          },
+          "confusion_matrix": [
+            [
+              112,
+              16
+            ],
+            [
+              8,
+              120
+            ]
+          ],
+          "prediction_counts": {
+            "parasitized": 120,
+            "uninfected": 136
+          },
+          "failure_examples": {
+            "parasitized": [
+              {
+                "image_sha256": "6939de7085c28f3b7640046f505bc99789797214d1b08a2f1b77d02976b6f6b5",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.17069600120327227,
+                  "uninfected": 0.8293039987967277
+                }
+              },
+              {
+                "image_sha256": "f90f245334809137124055b24f077cd0b3790d810db176209e0dae6d1ececc10",
+                "actual": "parasitized",
+                "predicted": "uninfected",
+                "scores": {
+                  "parasitized": 0.1538547381395015,
+                  "uninfected": 0.8461452618604985
+                }
+              }
+            ],
+            "uninfected": [
+              {
+                "image_sha256": "d0301d3b7d66c86a516c83203edc6caca57802c2934a032ed379eed209b90842",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.8675867112655928,
+                  "uninfected": 0.1324132887344071
+                }
+              },
+              {
+                "image_sha256": "3c6e954291f35af851bb666c2697764041e57f19869fda296002af029fa73ce1",
+                "actual": "uninfected",
+                "predicted": "parasitized",
+                "scores": {
+                  "parasitized": 0.6617667629558093,
+                  "uninfected": 0.3382332370441907
+                }
+              }
+            ]
+          }
+        }
+      },
+      "protocol_sha256": "51eab103354a2ee205ecd28ebb8fb7b5195f258a48e190244154779baafbd10d",
+      "head_sha256": "87620656b0457fbe947a7508dcca9299b971a1e28d18326ecbc4ff4375925035",
+      "native_clip_cosine_max_abs_delta": null
+    }
+  },
+  "final_test": {
+    "clip": {
+      "class-name": {
+        "n": 384,
+        "accuracy": 0.5,
+        "balanced_accuracy": 0.5,
+        "macro_f1": 0.3333333333333333,
+        "per_class": {
+          "parasitized": {
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.6666666666666666
+          },
+          "uninfected": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        },
+        "confusion_matrix": [
+          [
+            192,
+            0
+          ],
+          [
+            192,
+            0
+          ]
+        ],
+        "prediction_counts": {
+          "parasitized": 384,
+          "uninfected": 0
+        },
+        "failure_examples": {
+          "parasitized": [],
+          "uninfected": [
+            {
+              "image_sha256": "1fb842d757e38e8c2e43199c364fbc6f27871219a315c9fded8742f8e168edb0",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.30915921926498413,
+                "uninfected": 0.2961627244949341
+              }
+            },
+            {
+              "image_sha256": "c0b68c38c83b658fde7de3114ecc5aad081295dbdbf9c24396cacfa803e9a3a0",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.3175477981567383,
+                "uninfected": 0.30965355038642883
+              }
+            }
+          ]
+        }
+      },
+      "knowledge-guided": {
+        "n": 384,
+        "accuracy": 0.5026041666666666,
+        "balanced_accuracy": 0.5026041666666666,
+        "macro_f1": 0.3564452867935455,
+        "per_class": {
+          "parasitized": {
+            "precision": 0.5555555555555556,
+            "recall": 0.026041666666666668,
+            "f1": 0.04975124378109453
+          },
+          "uninfected": {
+            "precision": 0.5013333333333333,
+            "recall": 0.9791666666666666,
+            "f1": 0.6631393298059964
+          }
+        },
+        "confusion_matrix": [
+          [
+            5,
+            187
+          ],
+          [
+            4,
+            188
+          ]
+        ],
+        "prediction_counts": {
+          "parasitized": 9,
+          "uninfected": 375
+        },
+        "failure_examples": {
+          "parasitized": [
+            {
+              "image_sha256": "f25bfed7bfccfb831ba96780b90ea1ebdf180ba34ee8f57c545aaa2c093ec34d",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.2893625497817993,
+                "uninfected": 0.29848015308380127
+              }
+            },
+            {
+              "image_sha256": "7e75fa966f5ca1a90bc3a722c8293f419429eb285a8e826d4b84f18ea4d634e4",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.30354875326156616,
+                "uninfected": 0.32414519786834717
+              }
+            }
+          ],
+          "uninfected": [
+            {
+              "image_sha256": "4d08b9fd83b1c9c1731ca5d4634f8c821f03ad7a5484e9fc4dfa04e9898f354b",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.26756221055984497,
+                "uninfected": 0.2640795111656189
+              }
+            },
+            {
+              "image_sha256": "771b04b26ffc3e9ba5655f91bf498b365f51584a20fa07c5b1fd44ce90ba0051",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.26784729957580566,
+                "uninfected": 0.26402735710144043
+              }
+            }
+          ]
+        }
+      },
+      "clip-ensemble": {
+        "n": 384,
+        "accuracy": 0.5677083333333334,
+        "balanced_accuracy": 0.5677083333333334,
+        "macro_f1": 0.5226312793937034,
+        "per_class": {
+          "parasitized": {
+            "precision": 0.5419354838709678,
+            "recall": 0.875,
+            "f1": 0.6693227091633466
+          },
+          "uninfected": {
+            "precision": 0.6756756756756757,
+            "recall": 0.2604166666666667,
+            "f1": 0.37593984962406013
+          }
+        },
+        "confusion_matrix": [
+          [
+            168,
+            24
+          ],
+          [
+            142,
+            50
+          ]
+        ],
+        "prediction_counts": {
+          "parasitized": 310,
+          "uninfected": 74
+        },
+        "failure_examples": {
+          "parasitized": [
+            {
+              "image_sha256": "76dc1dd3bb5913778e6d7c52b27f80cba212188cd63de1d54d7d27aa46c2a4df",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.2929946184158325,
+                "uninfected": 0.2934359014034271
+              }
+            },
+            {
+              "image_sha256": "9e4d01f975e0da6608b709f4c84ee6c65b894ec6478281d51cde071854cf4c7e",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.28952687978744507,
+                "uninfected": 0.2914623022079468
+              }
+            }
+          ],
+          "uninfected": [
+            {
+              "image_sha256": "1fb842d757e38e8c2e43199c364fbc6f27871219a315c9fded8742f8e168edb0",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.30576884746551514,
+                "uninfected": 0.3028489351272583
+              }
+            },
+            {
+              "image_sha256": "c0b68c38c83b658fde7de3114ecc5aad081295dbdbf9c24396cacfa803e9a3a0",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.32136771082878113,
+                "uninfected": 0.3143385648727417
+              }
+            }
+          ]
+        }
+      },
+      "clip-ridge": {
+        "n": 384,
+        "accuracy": 0.9505208333333334,
+        "balanced_accuracy": 0.9505208333333334,
+        "macro_f1": 0.9505178131803291,
+        "per_class": {
+          "parasitized": {
+            "precision": 0.9576719576719577,
+            "recall": 0.9427083333333334,
+            "f1": 0.9501312335958005
+          },
+          "uninfected": {
+            "precision": 0.9435897435897436,
+            "recall": 0.9583333333333334,
+            "f1": 0.9509043927648578
+          }
+        },
+        "confusion_matrix": [
+          [
+            181,
+            11
+          ],
+          [
+            8,
+            184
+          ]
+        ],
+        "prediction_counts": {
+          "parasitized": 189,
+          "uninfected": 195
+        },
+        "failure_examples": {
+          "parasitized": [
+            {
+              "image_sha256": "a00290d80c161ccc8d86b596b592c690eb018dab0eb1e2794415b3776ccfe22f",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.24302699247090048,
+                "uninfected": 0.7569730075290995
+              }
+            },
+            {
+              "image_sha256": "3417a81d43018fd1859566c3c719a7fb645a28801e4427f1bae71feac9ce2cbf",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.2960492653263701,
+                "uninfected": 0.7039507346736299
+              }
+            }
+          ],
+          "uninfected": [
+            {
+              "image_sha256": "5cd051c2bcc00591bfbc7ac97025169750bde515454e2b18d0229532a154d0df",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.7855287732667875,
+                "uninfected": 0.2144712267332125
+              }
+            },
+            {
+              "image_sha256": "c895833ee4967975633ebc5e2363da5fdeaee22c0c233c133264ce703097dc25",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.5230699608612281,
+                "uninfected": 0.47693003913877186
+              }
+            }
+          ]
+        }
+      }
+    },
+    "biomed": {
+      "biomed-class-name": {
+        "n": 384,
+        "accuracy": 0.5,
+        "balanced_accuracy": 0.5,
+        "macro_f1": 0.3333333333333333,
+        "per_class": {
+          "parasitized": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "uninfected": {
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.6666666666666666
+          }
+        },
+        "confusion_matrix": [
+          [
+            0,
+            192
+          ],
+          [
+            0,
+            192
+          ]
+        ],
+        "prediction_counts": {
+          "parasitized": 0,
+          "uninfected": 384
+        },
+        "failure_examples": {
+          "parasitized": [
+            {
+              "image_sha256": "f25bfed7bfccfb831ba96780b90ea1ebdf180ba34ee8f57c545aaa2c093ec34d",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.41342222690582275,
+                "uninfected": 0.44463562965393066
+              }
+            },
+            {
+              "image_sha256": "7e75fa966f5ca1a90bc3a722c8293f419429eb285a8e826d4b84f18ea4d634e4",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.4067686200141907,
+                "uninfected": 0.4580414891242981
+              }
+            }
+          ],
+          "uninfected": []
+        }
+      },
+      "biomed-ensemble": {
+        "n": 384,
+        "accuracy": 0.5026041666666666,
+        "balanced_accuracy": 0.5026041666666666,
+        "macro_f1": 0.33909439062852,
+        "per_class": {
+          "parasitized": {
+            "precision": 1.0,
+            "recall": 0.005208333333333333,
+            "f1": 0.010362694300518135
+          },
+          "uninfected": {
+            "precision": 0.5013054830287206,
+            "recall": 1.0,
+            "f1": 0.6678260869565218
+          }
+        },
+        "confusion_matrix": [
+          [
+            1,
+            191
+          ],
+          [
+            0,
+            192
+          ]
+        ],
+        "prediction_counts": {
+          "parasitized": 1,
+          "uninfected": 383
+        },
+        "failure_examples": {
+          "parasitized": [
+            {
+              "image_sha256": "f25bfed7bfccfb831ba96780b90ea1ebdf180ba34ee8f57c545aaa2c093ec34d",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.42537349462509155,
+                "uninfected": 0.44798997044563293
+              }
+            },
+            {
+              "image_sha256": "7e75fa966f5ca1a90bc3a722c8293f419429eb285a8e826d4b84f18ea4d634e4",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.421057790517807,
+                "uninfected": 0.4427888095378876
+              }
+            }
+          ],
+          "uninfected": []
+        }
+      },
+      "biomed-ridge": {
+        "n": 384,
+        "accuracy": 0.9661458333333334,
+        "balanced_accuracy": 0.9661458333333333,
+        "macro_f1": 0.966145603743515,
+        "per_class": {
+          "parasitized": {
+            "precision": 0.9685863874345549,
+            "recall": 0.9635416666666666,
+            "f1": 0.9660574412532638
+          },
+          "uninfected": {
+            "precision": 0.9637305699481865,
+            "recall": 0.96875,
+            "f1": 0.9662337662337662
+          }
+        },
+        "confusion_matrix": [
+          [
+            185,
+            7
+          ],
+          [
+            6,
+            186
+          ]
+        ],
+        "prediction_counts": {
+          "parasitized": 191,
+          "uninfected": 193
+        },
+        "failure_examples": {
+          "parasitized": [
+            {
+              "image_sha256": "a00290d80c161ccc8d86b596b592c690eb018dab0eb1e2794415b3776ccfe22f",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": 0.1483562588042563,
+                "uninfected": 0.8516437411957437
+              }
+            },
+            {
+              "image_sha256": "7e8e0c63e81dba37654ff9ce0bbc1a1ec83f24b5f33be14cc5a407a220b2be2c",
+              "actual": "parasitized",
+              "predicted": "uninfected",
+              "scores": {
+                "parasitized": -0.03656496699503864,
+                "uninfected": 1.0365649669950385
+              }
+            }
+          ],
+          "uninfected": [
+            {
+              "image_sha256": "3004613084e107fd798ae4d6c7c87612d9bc96d66421cb8cafa5b7aadb7e24bc",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.907794045208601,
+                "uninfected": 0.09220595479139904
+              }
+            },
+            {
+              "image_sha256": "321b764cdeebdb3e6e2bf4ff5f4696d1355b0cf1bed3a6cdda325895c1f6878b",
+              "actual": "uninfected",
+              "predicted": "parasitized",
+              "scores": {
+                "parasitized": 0.7048173439291279,
+                "uninfected": 0.29518265607087213
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
