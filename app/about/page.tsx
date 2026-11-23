@@ -8,7 +8,7 @@ export default function About() {
   return (
     <>
       <PageIntro label="Capital Youth Expo 2026" title="About the Project">
-        An Explainable Malaria Cell Screening Research Prototype
+        A Malaria Cell Classification Research Prototype
       </PageIntro>
       <div className="container inner-content">
         <div className="about-grid">

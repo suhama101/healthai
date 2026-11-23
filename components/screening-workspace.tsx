@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
+import { CircleAlert, ShieldCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AnalysisControls } from "@/components/analysis-controls";
 import { ImagePreview } from "@/components/image-preview";
@@ -118,11 +118,13 @@ function Workspace({ service }: { service: InferenceService }) {
     }
   }
 
-  let status = preview ? "Image ready for analysis" : "Select an image to begin";
-  if (service.status === "disconnected") status = service.message;
-  else if (analyzing) status = "Analyzing image…";
-  else if (availability === "checking") status = "Checking the inference service…";
-  else if (availability === "unavailable") status = "Inference service unavailable";
+  const readiness = service.status === "disconnected" ? "preview" : availability;
+  const status = {
+    preview: "Preview only",
+    checking: "Checking model readiness…",
+    unavailable: "Inference service unavailable",
+    ready: "Model ready",
+  }[readiness];
 
   return (
     <div className="workspace-grid">
@@ -132,20 +134,21 @@ function Workspace({ service }: { service: InferenceService }) {
         </div>
         {preview && <ImagePreview {...preview} onRemove={clear} />}
         <ImageUploader hasImage={Boolean(preview)} onSelect={selectImage} />
-        <div className="upload-feedback" aria-live="polite">
-          {validating ? "Checking the image…" : error || (preview && "Image ready to preview.")}
-        </div>
+        {validating && <p className="upload-feedback" role="status">Checking the image…</p>}
+        {error && <p className="upload-error" role="alert"><CircleAlert size={17} aria-hidden="true" />{error}</p>}
         <AnalysisControls canAnalyze={service.status === "configured" && availability === "ready" && Boolean(preview) && !validating}
-          busy={analyzing} onAnalyze={analyze} message={status}
+          busy={analyzing} state={readiness} onAnalyze={analyze} message={status}
           onClear={clear} canClear={Boolean(preview || error || validating)} />
+        {service.status === "disconnected" && <p className="workspace-status-help">{service.message}</p>}
+        {readiness === "unavailable" && <p className="workspace-status-help">Start the configured model service. The workspace will check again automatically.</p>}
         <p className="workspace-privacy">
           <ShieldCheck size={17} aria-hidden="true" />
-          {service.status === "configured"
+          <span>{service.status === "configured"
             ? `When you select Analyze, the image is sent to the configured service at ${service.origin}. The service processes it in memory.`
-            : "Image previews stay in this browser tab."}
+            : "Image previews stay in this browser tab."}</span>
         </p>
       </section>
-      <ResultsDisplay result={result} />
+      <ResultsDisplay result={result} busy={analyzing} />
     </div>
   );
 }

@@ -1,0 +1,26 @@
+# MediLens AI five-minute pitch
+
+Capital Youth Expo 2026 · Healthcare Hackathon · Healthcare track. Speaking time **4:55**, followed by two minutes of jury Q&A.
+
+| Slide and time | Headline and slide copy | Suggested visual | Speaker notes |
+| --- | --- | --- | --- |
+| 1 · 0:00–0:30 | **MediLens AI explores malaria cell-crop classification**. One thin-smear crop, two research classes, one reproducible benchmark. | Product name and workspace screenshot with an empty upload panel. | Introduce the hackathon prototype and the research question. The unit of analysis is one crop. |
+| 2 · 0:30–1:05 | **Microscopy makes parasite morphology visible**. Appearance varies with staining, sample preparation and imaging. | A simple diagram of a smear, field and individual cell crop. | WHO describes microscopy as a method for visualizing parasites in blood smears. Explain why this project isolates the cell-crop problem and why slide-level and clinical performance require separate evaluation. [WHO microscopy](https://www.who.int/teams/global-malaria-programme/case-management/diagnosis/microscopy) |
+| 3 · 1:05–1:55 | **Browser preview and local model inference**. Next.js upload and preview → loopback FastAPI → pinned CLIP encoder and fitted ridge head. | Two-lane architecture showing the public frontend preview and the local end-to-end demo. | Switch to the prepared local workspace, upload a permitted de-identified development crop and run Analyze. Read the result returned on screen. Preview stays in the browser and Analyze sends the image to the local process for in-memory processing. |
+| 4 · 1:55–2:45 | **Fit on development data, select on validation, report on locked test**. 768 fit / 256 validation / 384 locked test. | Three partition boxes and a five-stage method diagram from crop to research class. | Explain frozen 512-feature CLIP embeddings and the supervised ridge head. The original class-name prompts collapsed and morphology prompts remained imbalanced. State that the selection rule prioritized weaker-class recall, 89.06% for CLIP ridge versus 87.50% for BiomedCLIP ridge on validation. |
+| 5 · 2:45–3:40 | **95.05% accuracy on 384 locked-test crops**. 94.27% parasitized recall and 95.83% uninfected recall. | Model comparison bars and the confusion matrix with actual rows and predicted columns. | Read the two errors off the matrix, 11 missed parasitized crops and eight uninfected crops flagged. BiomedCLIP ridge reached 96.61% on this test, and the demo model remains the validation-selected CLIP ridge. [Step 3 report](../research/step-3.md) |
+| 6 · 3:40–4:25 | **A research and teaching workflow with explicit limits**. One dataset, released-group separation, uncalibrated scores, no clinical validation. | Comparison page beside the result panel with its score label visible. | Describe a research or classroom session comparing methods and reviewing errors. Released grouping information cannot fully verify patient independence. Explain the limits of evidence outside this dataset. |
+| 7 · 4:25–4:55 | **Next steps are external evaluation and release review**. Independent sites and confirmed group separation, calibration analysis and review of permitted hosting. | Three next steps and a link to the public repo. | Credit NLM, OpenAI CLIP, Microsoft BiomedCLIP, KPL as background and OpenAI Codex for coding, verification and documentation assistance. Close with the original grouped comparison, software workflow and integrated offline demo. [Public source](https://github.com/suhama101/healthai) |
+
+## Two-minute jury Q&A preparation
+
+Budget about 20 seconds per topic. Answer the questions the jury actually raises.
+
+- **Methodology.** Both encoders stayed frozen. The supervised heads learned only from development labels. The weaker-class recall rule selected the demo before test access. The locked comparison used the same crops for every method.
+- **Originality.** MediLens AI contributed the workspace, baseline audit, grouped experiment and reproducible local release. The public data and pretrained encoders are third party. KPL informed research direction and Codex assisted implementation, verification and documentation.
+- **Generalization.** We separated released groups, source fields and exact file digests. A single source and incomplete confirmation of patient independence limit the evidence. External sites and verified independent groups are future evaluation.
+- **Deployment.** Vercel serves a public preview and dashboard. A local FastAPI process serves genuine inference with pinned assets. The model-card deployment conclusion remains as documented. [Restricted inference notes](restricted-inference.md)
+- **Privacy.** Use only permitted de-identified research images. Preview stays in the browser. Local inference processes the selected crop in memory. The public repository excludes private datasets and model artifacts.
+- **Limitations.** The output is a binary crop label with raw uncalibrated scores. There is no patient-level or clinical validation. The 11 missed parasitized crops and eight uninfected crops flagged illustrate the benchmark errors.
+
+[Step 3 machine-readable results](../research/step-3-results.json) · [Walkthrough script](final-demo-script.md) · [Submission checklist](hackathon-checklist.md)

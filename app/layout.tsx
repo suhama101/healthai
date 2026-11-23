@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: { default: "MediLens AI | Malaria Cell Screening Research", template: "%s | MediLens AI" },
-  description: "An explainable malaria cell screening research prototype for the Capital Youth Expo 2026 Healthcare Hackathon.",
+  description: "A malaria cell classification research prototype for the Capital Youth Expo 2026 Healthcare Hackathon.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

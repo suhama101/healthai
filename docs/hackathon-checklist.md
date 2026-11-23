@@ -2,13 +2,14 @@
 
 The CYE competition rulebook requires a working live link for web or cloud projects, a walkthrough of at most two minutes, and a slide deck in PDF or PPTX. The finale format is a five-minute maximum pitch and two minutes of jury Q&A. The submission deadline is November 28, 2026 at 11:59 PM Pakistan time. [Official CYE Hackathon rulebook](https://www.capitalyouthexpo.com/rulebooks/04-hackathon.pdf)
 
-- [x] Verify public access to the source repository and README. [Official GitHub repository](https://github.com/suhama101/healthai)
-- [x] Publish and verify the Vercel frontend URL in preview-only mode. [Live frontend](https://healthai-lyart.vercel.app/)
-- [ ] Resolve the hosted-prototype requirement with the organizers. A frontend preview with Analyze disabled requires organizer acceptance if submitted with the offline jury demo.
-- [ ] Record a walkthrough of up to two minutes from a real local session. Label the recording as a recording and identify whether any linked web preview has live inference.
-- [ ] Export the presentation as PDF or PPTX. Include the research question, frozen model, split audit, measured results, licensing and accuracy limits, and an architecture slide.
-- [ ] Rehearse the five-minute pitch and two-minute Q&A. [Walkthrough and pitch outline](submission-demo.md)
-- [ ] Include NLM, CLIP, BiomedCLIP, software, artwork, and AI-assistant credits. Describe the original implementation and research workflow.
+- [x] **Public GitHub.** Source and README accessible. [Official GitHub repository](https://github.com/suhama101/healthai)
+- [x] **Online frontend.** Vercel frontend available in preview-only mode. [Live frontend](https://healthai-lyart.vercel.app/)
+- [x] **Offline genuine AI inference.** The pinned CLIP encoder and fitted ridge head run on the local FastAPI service. [Offline setup](submission-demo.md#before-recording-or-presenting)
+- [ ] **Hosted real inference.** Unavailable. A working live prototype still requires evidence of authorized hosted inference or organizer acceptance of the public preview with a genuine offline jury demo. [Restricted inference notes](restricted-inference.md)
+- [ ] **Recorded walkthrough.** Pending capture and export from a genuine local session. [Timed walkthrough script](final-demo-script.md)
+- [ ] **Slide deck.** Pending creation and export as PDF or PPTX. [Seven-slide pitch outline](final-pitch-outline.md)
+- [ ] Rehearse the pitch and Q&A. [Timing and jury questions](final-pitch-outline.md)
+- [ ] Include NLM, OpenAI CLIP, Microsoft BiomedCLIP, prior KPL research, software and artwork credits. Disclose OpenAI Codex assistance with implementation, verification and documentation. Describe the original implementation and research workflow. [Project credits](../README.md)
 - [ ] Include the research-only disclaimer, uncalibrated-score labels, scope of group separation, and absence of external or clinical validation.
 
 ## Offline handoff

@@ -29,8 +29,8 @@ export function ImageUploader({ hasImage, onSelect }: {
         onSelect(event.dataTransfer.files);
       }}>
       <span className="icon-tile"><UploadCloud size={27} aria-hidden="true" /></span>
-      <p className="drop-title">{hasImage ? "Drop an image to replace the preview" : "Drag and drop your image here"}</p>
-      <p id="upload-requirements">One JPEG or PNG image, up to 10 MB.</p>
+      <p className="drop-title">{hasImage ? "Replace the selected crop" : "Choose one cell crop"}</p>
+      <p id="upload-requirements">Browse or drop a JPEG or PNG image up to 10 MB.</p>
       <input ref={input} type="file" accept={ACCEPTED_IMAGE_TYPES} hidden
         onChange={(event) => {
           const files = event.currentTarget.files;

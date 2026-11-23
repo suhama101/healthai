@@ -12,7 +12,7 @@ export default function Home() {
           <div className="hero-copy">
             <p className="eyebrow hero-tag"><FlaskConical size={15} aria-hidden="true" /> Healthcare research prototype</p>
             <h1>See Beyond the <span>Microscope.</span></h1>
-            <p className="hero-description">An AI-assisted research prototype exploring malaria cell classification through medical image analysis and knowledge-guided vision-language methods.</p>
+            <p className="hero-description">A research prototype for malaria cell-crop classification, with a held-out comparison of vision-language prompts and supervised classifiers.</p>
             <div className="button-row">
               <Link href="/workspace" className="button button-primary"><ScanLine size={19} aria-hidden="true" /> Try the Demo</Link>
               <Link href="/research" className="button button-secondary">Explore Research</Link>
@@ -40,7 +40,7 @@ export default function Home() {
           </div>
           <Link href="/research" className="research-callout">
             <span className="icon-tile"><BookOpen size={23} aria-hidden="true" /></span>
-            <div><h3>Knowledge-guided methods</h3><p>Compare descriptions of cell features with a baseline that uses class names alone.</p><span className="text-link">Read the methodology</span></div>
+            <div><h3>Held-out results</h3><p>See where prompt methods struggled, how we selected CLIP ridge, and which errors remained.</p><span className="text-link">Explore the benchmark</span></div>
           </Link>
         </div>
       </section>

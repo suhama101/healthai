@@ -1,4 +1,4 @@
-import { ClipboardList } from "lucide-react";
+import { ClipboardList, ScanLine } from "lucide-react";
 import { methodLabels, type PredictionResponse, type ResearchClass } from "@/lib/inference";
 
 const labels: Record<ResearchClass, string> = {
@@ -6,21 +6,24 @@ const labels: Record<ResearchClass, string> = {
   uninfected: "Uninfected",
 };
 
-export function ResultsDisplay({ result }: { result: PredictionResponse | null }) {
+export function ResultsDisplay({ result, busy }: { result: PredictionResponse | null; busy: boolean }) {
   const scores = result?.scores;
   return (
     <section className="panel results-panel" aria-labelledby="results-title">
       <div className="panel-heading">
         <span className="icon-tile"><ClipboardList size={21} aria-hidden="true" /></span>
-        <div><h2 id="results-title">Research results</h2><p>Outputs from a connected model</p></div>
+        <div><h2 id="results-title">Research results</h2><p>Single cell-crop classification</p></div>
       </div>
       <div aria-live="polite">
         {result ? (
           <div className="result-content">
+            <div className="result-prediction">
+              <p>Predicted research class</p>
+              <h3>{labels[result.predictedClass]}</h3>
+            </div>
             <dl>
-              <div><dt>Predicted research class</dt><dd>{labels[result.predictedClass]}</dd></div>
               <div><dt>Method</dt><dd>{methodLabels[result.method]}</dd></div>
-              <div><dt>Model</dt><dd>{result.model.name} · {result.model.version}</dd></div>
+              <div><dt>Model</dt><dd>{result.model.name}<span className="model-revision">{result.model.version}</span></dd></div>
               {result.baseline && (
                 <div><dt>Baseline</dt><dd>{result.baseline.name} · {result.baseline.version} · {labels[result.baseline.predictedClass]}</dd></div>
               )}
@@ -29,7 +32,8 @@ export function ResultsDisplay({ result }: { result: PredictionResponse | null }
               <div>
                 <h3>{scores.kind === "calibrated_probability" ? "Calibrated probabilities" : scores.label}</h3>
                 {scores.kind === "calibrated_probability" && <p>Calibration method: {scores.calibrationMethod}</p>}
-                <dl>
+                {scores.kind === "model_score" && <p>Raw relative outputs. A higher score determines the research class. The values have no diagnostic probability interpretation.</p>}
+                <dl className="result-scores">
                   {(Object.keys(labels) as ResearchClass[]).map((label) => (
                     <div key={label}><dt>{labels[label]}</dt><dd>
                       {scores.kind === "calibrated_probability"
@@ -40,13 +44,13 @@ export function ResultsDisplay({ result }: { result: PredictionResponse | null }
                 </dl>
               </div>
             )}
-            <div><h3>Limitations</h3><ul>{result.limitations.map((item, index) => <li key={index}>{item}</li>)}</ul></div>
+            <div className="result-limitations"><h3>Limitations</h3><ul>{result.limitations.map((item, index) => <li key={index}>{item}</li>)}</ul></div>
           </div>
         ) : (
           <div className="results-empty">
-            <ClipboardList size={34} strokeWidth={1.5} aria-hidden="true" />
-            <h3>No analysis yet</h3>
-            <p>A research classification and model details will appear here after a connected model completes an analysis.</p>
+            {busy ? <ScanLine size={34} strokeWidth={1.5} aria-hidden="true" /> : <ClipboardList size={34} strokeWidth={1.5} aria-hidden="true" />}
+            <h3>{busy ? "Analyzing the selected crop" : "No analysis yet"}</h3>
+            <p>{busy ? "Waiting for the model service to return a research result." : "A research class and model scores will appear after a completed analysis."}</p>
           </div>
         )}
       </div>
