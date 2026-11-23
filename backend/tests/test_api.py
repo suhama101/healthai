@@ -19,6 +19,8 @@ def client():
 
 
 def test_ready_and_restricted_cors(client):
+    assert client.get("/live").json() == {"status": "alive"}
+    assert client.get("/openapi.json").status_code == 404
     selection = read_json(SELECTION)
     model, version = MODEL_DETAILS[selection["family"]]
     health = client.get("/health").json()
@@ -26,6 +28,7 @@ def test_ready_and_restricted_cors(client):
     assert (health["model"], health["version"], health["method"]) == (model, version, selection["selected"])
     assert selection["selected"] in health["methods"]
     assert client.get("/health", headers={"Host": "unapproved.example"}).status_code == 400
+    assert client.post("/predict", headers={"Origin": "https://unknown.example"}).status_code == 403
     for origin, expected in [("http://localhost:3000", 200), ("https://unknown.example", 400)]:
         response = client.options("/predict", headers={
             "Origin": origin, "Access-Control-Request-Method": "POST", "Access-Control-Request-Headers": "Content-Type",

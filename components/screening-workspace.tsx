@@ -121,8 +121,8 @@ function Workspace({ service }: { service: InferenceService }) {
   let status = preview ? "Image ready for analysis" : "Select an image to begin";
   if (service.status === "disconnected") status = service.message;
   else if (analyzing) status = "Analyzing image…";
-  else if (availability === "checking") status = "Checking the local inference service…";
-  else if (availability === "unavailable") status = "Local inference service unavailable";
+  else if (availability === "checking") status = "Checking the inference service…";
+  else if (availability === "unavailable") status = "Inference service unavailable";
 
   return (
     <div className="workspace-grid">
@@ -141,7 +141,7 @@ function Workspace({ service }: { service: InferenceService }) {
         <p className="workspace-privacy">
           <ShieldCheck size={17} aria-hidden="true" />
           {service.status === "configured"
-            ? `When you select Analyze, the image is sent to your local service at ${service.origin}. The service processes it in memory.`
+            ? `When you select Analyze, the image is sent to the configured service at ${service.origin}. The service processes it in memory.`
             : "Image previews stay in this browser tab."}
         </p>
       </section>

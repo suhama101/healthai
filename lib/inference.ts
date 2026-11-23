@@ -7,7 +7,7 @@ export const methodLabels: Record<ResearchMethod, string> = {
   "class-name": "Class-name CLIP baseline",
   "knowledge-guided": "Knowledge-guided CLIP prompt experiment",
   "clip-ensemble": "CLIP morphology prompt ensemble · zero-shot",
-  "clip-ridge": "CLIP frozen encoder · supervised ridge",
+  "clip-ridge": "CLIP Image Encoder + Supervised Ridge Classifier",
   "biomed-class-name": "BiomedCLIP class-name prompts · zero-shot",
   "biomed-ensemble": "BiomedCLIP morphology prompt ensemble · zero-shot",
   "biomed-ridge": "BiomedCLIP frozen encoder · supervised ridge",
@@ -43,6 +43,9 @@ export class InferenceError extends Error {
 }
 
 const PROTOCOL = "medilens-clip-v1";
+const RELEASE_MODEL = "openai/clip-vit-base-patch32";
+const RELEASE_REVISION = "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268";
+const RELEASE_METHOD = "clip-ridge";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -88,13 +91,14 @@ export function createInferenceService(baseUrl: string | undefined): InferenceSe
   let origin: string;
   try {
     const url = new URL(baseUrl);
-    if (url.protocol !== "http:" || !["localhost", "127.0.0.1"].includes(url.hostname)
+    const loopback = url.protocol === "http:" && ["localhost", "127.0.0.1"].includes(url.hostname);
+    if ((!loopback && url.protocol !== "https:")
         || url.username || url.password || url.pathname !== "/" || url.search || url.hash) {
-      throw new Error("Use a loopback HTTP origin.");
+      throw new Error("Use a loopback HTTP or approved HTTPS origin.");
     }
     origin = url.origin;
   } catch {
-    return { status: "disconnected", message: "Configure a local HTTP inference URL" };
+    return { status: "disconnected", message: "Configure a local HTTP or approved HTTPS inference URL" };
   }
 
   return {
@@ -109,7 +113,7 @@ export function createInferenceService(baseUrl: string | undefined): InferenceSe
         if (!response.ok) return false;
         const data: unknown = await response.json();
         return isRecord(data) && data.status === "ready" && data.protocol === PROTOCOL
-          && isText(data.model) && isText(data.version);
+          && data.model === RELEASE_MODEL && data.version === RELEASE_REVISION && data.method === RELEASE_METHOD;
       } catch {
         return false;
       }
@@ -125,14 +129,15 @@ export function createInferenceService(baseUrl: string | undefined): InferenceSe
         });
       } catch {
         if (timeout.aborted) throw new InferenceError("The model request timed out. Try again.");
-        throw new InferenceError("Cannot reach the local inference service. Check that it is running.", true);
+        throw new InferenceError("Cannot reach the configured inference service.", true);
       }
       const data: unknown = await response.json().catch(() => null);
       if (!response.ok) {
         const detail = isRecord(data) && isText(data.detail) ? data.detail : null;
         throw new InferenceError(detail ?? "The model could not analyze this image. Try again.");
       }
-      if (!isPrediction(data) || data.scores?.kind !== "model_score") {
+      if (!isPrediction(data) || data.scores?.kind !== "model_score" || data.method !== RELEASE_METHOD
+          || data.model.name !== RELEASE_MODEL || data.model.version !== RELEASE_REVISION) {
         throw new InferenceError("The service returned an invalid model response.");
       }
       return data;

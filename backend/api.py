@@ -3,6 +3,7 @@
 import asyncio
 from contextlib import asynccontextmanager
 import logging
+from os import environ
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException, Request
@@ -15,12 +16,14 @@ from starlette.requests import ClientDisconnect
 
 from backend.clip_model import METHOD_NAMES, ResearchClass
 from backend.images import FORMATS, MAX_IMAGE_BYTES, ImageError, decode_image
+from backend.release_assets import verify_cache
+from backend.service_config import allowlists
 from backend.step3_models import DemoModel, RIDGE_METHODS
 
 LOGGER = logging.getLogger("uvicorn.error")
 PROTOCOL = "medilens-clip-v1"
 DISCLAIMER = "For research and education only. Do not use for clinical diagnosis or patient care."
-DEVELOPMENT_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+ALLOWED_ORIGINS, ALLOWED_HOSTS = allowlists()
 
 
 class ModelDetails(BaseModel):
@@ -48,6 +51,8 @@ class Prediction(BaseModel):
 
 
 def load_ready_model():
+    if environ.get("MEDILENS_VERIFY_RELEASE") == "1":
+        verify_cache()
     classifier = DemoModel()
     with Image.new("RGB", (224, 224)) as warmup:
         classifier.predict(warmup, (classifier.method,))
@@ -63,12 +68,17 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="MediLens AI Research API", lifespan=lifespan, docs_url=None, redoc_url=None)
+app = FastAPI(title="MediLens AI Research API", lifespan=lifespan, openapi_url=None)
 app.add_middleware(
-    CORSMiddleware, allow_origins=DEVELOPMENT_ORIGINS,
+    CORSMiddleware, allow_origins=ALLOWED_ORIGINS,
     allow_methods=["GET", "POST"], allow_headers=["Content-Type"],
 )
-app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=ALLOWED_HOSTS, www_redirect=False)
+
+
+@app.get("/live")
+async def live():
+    return {"status": "alive"}
 
 
 @app.get("/health")
@@ -95,6 +105,9 @@ async def read_image(request: Request) -> bytes:
 
 @app.post("/predict", response_model=Prediction, response_model_exclude_none=True)
 async def predict(request: Request, method: str | None = None):
+    origin = request.headers.get("origin")
+    if origin is not None and origin not in ALLOWED_ORIGINS:
+        raise HTTPException(403, "This browser origin is not approved for inference.")
     classifier: DemoModel = request.app.state.classifier
     method = method if method is not None else classifier.method
     if method not in classifier.methods:

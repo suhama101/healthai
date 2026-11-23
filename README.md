@@ -21,6 +21,7 @@ Use Python 3.12 and Node.js 20.9 or later. After the one-time setup below, start
 ```powershell
 $env:HF_HUB_OFFLINE = '1'
 $env:TRANSFORMERS_OFFLINE = '1'
+$env:MEDILENS_VERIFY_RELEASE = '1'
 .\.venv\Scripts\python.exe -m uvicorn backend.api:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
@@ -48,6 +49,8 @@ npm.cmd ci
 ```
 
 The two checkpoints total about 1.39 GB. The official cell archive is about 353 MB. They live under the ignored `.medilens/` directory along with the local validation lock, any fitted heads, split manifests, and per-image results. Prepare those files before the demo. For a local production build, set the public API variable before `npm.cmd run build`.
+
+For the exact Step 3 demo on a fresh machine, use the private verified artifact transfer described in [Deployment](docs/deployment.md). The research setup above reproduces an experiment and can produce different floating-point coefficient bytes. Release mode requires the original frozen digests.
 
 ## Reproduce the research comparison
 
@@ -78,3 +81,9 @@ npm.cmd run build
 - OpenAI Codex assisted with implementation, audit, evaluation, documentation, and verification. OpenAI image generation produced the landing-page illustration. The original work is the application and research workflow. Pretrained weights, data, and prior research are separately credited.
 
 For research and education only. Use de-identified research or test images. The evaluation concerns cell crops from one public release. Scores are uncalibrated. Do not use the app for diagnosis, treatment, patient care, or patient-level conclusions.
+
+## Deployment and submission
+
+The [official source repository](https://github.com/suhama101/healthai) uses `main` for automatic frontend checks and builds. The standard Next.js build is suitable for Vercel, and `MEDILENS_STATIC_EXPORT=1` generates static files. Set `NEXT_PUBLIC_MEDILENS_API_URL` at build time only for an authorized, reachable HTTPS research backend. An unset value keeps Analyze disabled.
+
+The [deployment guide](docs/deployment.md) covers the Docker backend, frozen artifact transfer, hosting costs, and release boundaries. The [submission checklist](docs/hackathon-checklist.md) includes the offline jury procedure and the hosted-prototype requirement. The supported demo is local research inference.

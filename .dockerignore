@@ -1,0 +1,16 @@
+**
+!Dockerfile
+!backend/
+!backend/__init__.py
+!backend/api.py
+!backend/assets.py
+!backend/clip_model.py
+!backend/dataset.py
+!backend/images.py
+!backend/release-lock.json
+!backend/release_assets.py
+!backend/requirements-release.txt
+!backend/service_config.py
+!backend/step3_biomed.py
+!backend/step3_models.py
+!backend/step3_protocol.py
