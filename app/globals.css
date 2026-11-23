@@ -252,7 +252,6 @@ h3 { font-size: 1.12rem; letter-spacing: -.022em; }
 .research-index a:hover { text-decoration: underline; }
 .research-sections { display: grid; gap: .85rem; }
 .research-entry .text-link, .about-grid .text-link { display: inline-block; margin-top: .85rem; }
-.research-entry .pending-label { display: inline-block; padding: .17rem .55rem; border-radius: .4rem; background: #faf0dd; color: #714a12; font-size: .875rem; font-weight: 700; }
 
 .site-footer { background: #10243b; color: white; }
 .footer-inner { display: flex; justify-content: space-between; gap: 1.5rem; padding-block: 1.7rem; }

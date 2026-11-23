@@ -1,27 +1,24 @@
-# Inference service contract
+# Local inference service contract
 
-The frontend imports the active adapter from [lib/inference.ts](../lib/inference.ts). The adapter is disconnected in Step 1. The upload component and result renderer depend on the TypeScript contract and can stay in place when the adapter is connected.
+The browser connects to the configured loopback HTTP origin using [lib/inference.ts](../lib/inference.ts). The local FastAPI server loads the pinned checkpoint and the two text embedding sets once at startup. `GET /health` confirms readiness and reports the protocol marker `medilens-clip-v1`, model ID, and checkpoint revision. The workspace checks readiness before enabling Analyze and polls for changes while mounted.
 
-## Adapter input
+## Requests
 
-The connected adapter implements `analyze(image: File, signal: AbortSignal): Promise<PredictionResponse>`. It receives a validated JPEG or PNG and a cancellation signal. The workspace aborts obsolete requests when the image is removed or replaced or the workspace unmounts. The adapter should forward the signal into its request and reject on transport, service, or response validation failure. The transport is deliberately left open so the chosen inference deployment can define the final endpoint. Keep any service credentials on the server.
+Send raw JPEG or PNG bytes to `POST /predict` with `Content-Type: image/jpeg` or `image/png`. The default `class-name` method is the workspace baseline. Use `?method=knowledge-guided` for the separate experimental configuration and paired baseline class. The service limits the body to 10 MiB and the decoded image to 4,096 pixels per edge and 4,194,304 pixels total. It verifies the file and decodes one frame in memory. It accepts one prediction at a time and returns 503 while occupied. A body read has a 15-second deadline. Start the service with one Uvicorn worker bound to loopback.
 
-## Successful result
+CORS permits the Next.js development origins `http://localhost:3000` and `http://127.0.0.1:3000`. The client posts only when Analyze is selected and aborts obsolete requests when a selection changes, is cleared, or the workspace unmounts. Aborting the client request does not stop an image already in model computation. The service does not keep or log request images.
+
+## Successful response
 
 | Field | Meaning |
 | --- | --- |
-| `predictedClass` | `parasitized` or `uninfected` for the selected cell crop |
-| `model` | Human-readable model name and reproducible version |
-| `limitations` | Text describing constraints relevant to the result |
-| `scores` | Optional record of finite scores for both classes with semantics below |
-| `baseline` | Optional baseline name, version, and class for the same image |
+| `predictedClass` | `parasitized` or `uninfected` for the input cell crop |
+| `method` | `class-name` or `knowledge-guided` |
+| `model` | `name` is the checkpoint ID and `version` is the immutable Hugging Face revision |
+| `limitations` | Research-use disclaimer and method limitations |
+| `scores` | `kind: "model_score"`, label, and two raw image–text cosine similarities in the range from −1 to 1 |
+| `baseline` | For a knowledge-guided request, the class-name method's name, version, and class for that same crop |
 
-For `calibrated_probability`, return probabilities from 0 to 1 that sum to approximately 1 and identify the evaluated calibration method. For `model_score`, give the metric a clear label, such as cosine similarity, and return raw values. Omit scores when their semantics are unavailable. The renderer displays raw scores as numbers and calibrated probabilities as percentages.
+The frontend validates the response shape and class/method labels before rendering. The API scores are similarities and carry no probability or calibration claim. See the [research report](../research/step-2.md) for prompts, preprocessing, and evaluation scope.
 
-## Requirements before connection
-
-- Validate response shape and class labels at runtime before returning `PredictionResponse`; TypeScript alone does not validate external JSON.
-- Validate request type, signatures, byte count, and decoded dimensions again at the server. Document model preprocessing and support the same file types as the browser.
-- Configure a verified model endpoint, request timeouts, predictable errors, and the data handling policy. Keep the disconnected adapter active until those checks pass.
-- Before enabling requests, explain where images are sent and how long they are retained. Use only de-identified research or test images.
-- Exercise the contract with authentic model responses and record the evaluation and calibration decisions in the research documentation.
+The API returns 408 for a body-read timeout, 413 for an oversized upload, 415 for unsupported media, 422 for a malformed image or invalid method, 503 for an occupied model, and 500 for an inference failure. Browser network failures present a service availability message. The result panel stays empty when a request fails.

@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 .next/
 out/
 coverage/
@@ -7,3 +7,16 @@ next-env.d.ts
 .env*
 .vercel/
 npm-debug.log*
+.venv/
+.medilens/
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.safetensors
+*.onnx
+*.pth
+*.pt
+pytorch_model.bin
+data/
+datasets/
+checkpoints/

@@ -10,67 +10,74 @@ Capital Youth Expo 2026 · Healthcare Hackathon
 | Submission deadline | November 28, 2026 at 11:59 PM |
 | Finale | December 2, 2026 |
 
-MediLens AI is an original hackathon frontend built during the official development window. The interface and upload workflow were created for this project. The proposed evaluation draws on the prior work cited below.
+MediLens AI started as an original hackathon frontend. Step 2 adds an original local inference adapter, FastAPI service, dataset audit, and evaluation workflow. General-purpose CLIP weights, the NLM dataset, and prior research are third-party inputs credited below.
 
-## Problem and proposed solution
+## What it does
 
-Cell appearance can vary with staining, preparation, and image quality. MediLens AI asks whether a vision-language model using descriptions of visible cell features can distinguish parasitized and uninfected crops from thin-smear microscopy. The planned experiment will compare those descriptions with a class-name baseline on the same held-out data.
+The research question is whether text describing visible cell features can help a vision-language model distinguish parasitized and uninfected crops from thin-smear microscopy. The workspace accepts a de-identified JPEG or PNG up to 10 MiB, validates it, and shows a local preview. Analyze becomes available after a configured local model service loads. The class-name CLIP baseline returns a research class and two raw image–text cosine similarities. A separate experimental configuration uses morphology-guided prompts.
+
+Previewing an image makes no image request. Selecting Analyze sends that image to the loopback address shown in the workspace. The FastAPI service processes it in memory. There is no patient-image persistence.
 
 ## Run locally
 
-Use Node.js 20.9 or later and npm. From the project directory:
+Use Python 3.12 with a CPU PyTorch build and Node.js 20.9 or later. The following examples use PowerShell on Windows. On platforms that use `.venv/bin/python`, run the matching executable and set `NEXT_PUBLIC_MEDILENS_API_URL` in the frontend process environment.
 
-```sh
-npm ci
-npm run dev
+From the project root, set up the environment once. If PowerShell resolves Python to an unused Store shim, use the actual Python 3.12 executable.
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
+.\.venv\Scripts\python.exe -m backend.assets model
+npm.cmd ci
 ```
 
-Open `http://localhost:3000`. On Windows, use `npm.cmd` if PowerShell blocks the npm script shim.
+The model download is about 605 MB and is needed once. The dataset is optional for the workspace and required for evaluating and running the public-image integration test. Start the backend in one terminal. Health becomes ready once the weights and text embeddings have loaded.
 
-```sh
-npm run lint
-npm run typecheck
-npm run build
-npm start
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn backend.api:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-`npm start` serves the completed production build. Step 1 uses no environment variables. The frontend uses Next.js App Router, React, TypeScript, Tailwind CSS, Lucide React, and ESLint, with exact versions recorded in the npm lockfile. It is structured for a standard Next.js build on Vercel. Python and PyTorch are planned for a separately deployed inference service.
+Start Next.js in a second terminal and open `http://127.0.0.1:3000/workspace`. Keep port 3000 for the configured development CORS origins.
 
-## Implemented in Step 1
+```powershell
+$env:NEXT_PUBLIC_MEDILENS_API_URL = 'http://127.0.0.1:8000'
+npm.cmd run dev -- --hostname 127.0.0.1
+```
 
-| Route | Contents |
-| --- | --- |
-| `/` | Project overview, research question, workflow preview, and demo entry point |
-| `/workspace` | Drag-and-drop and keyboard-accessible file browsing, validation, preview, replacement, removal, and clearing |
-| `/how-it-works` | Four-step screening workflow with the future model steps identified |
-| `/research` | Candidate dataset, modeling approach, evaluation plan, sources, and limitations |
-| `/about` | Original project scope, intended use, and hackathon timeline |
+Without the variable, the pages and image preview still work and Analyze stays disabled. If using a production build locally, set the variable before `npm.cmd run build` because Next.js embeds public values at build time. The PyTorch service is designed for a local process.
 
-The workspace checks that a selection contains one JPEG or PNG of at most 10 MB, verifies its file signature, and decodes it locally. Previews use revocable browser object URLs, and clearing or leaving the workspace releases them. The workspace sends no image requests. Analyze remains disabled because inference is disconnected. The result panel is empty until it receives a genuine response from a connected service.
+## Dataset, evaluation, and checks
 
-## Inference integration
+Source: National Library of Medicine. The [NLM Malaria Cell Images archive and official mappings](https://data.lhncbc.nlm.nih.gov/public/Malaria/index.html) contain labeled cell crops. Cite Rajaraman et al. (2018), *Pre-trained convolutional neural networks as feature extractors toward improved malaria parasite detection in thin blood smear images*, PeerJ 6:e4568. See the linked report for terms, class counts, grouping, split audits, actual results, and limitations. [Original dataset paper](https://doi.org/10.7717/peerj.4568)
 
-See the [inference contract](docs/inference-contract.md) for response types and adapter requirements. Future work will:
+```powershell
+.\.venv\Scripts\python.exe -m backend.assets dataset
+.\.venv\Scripts\python.exe -m backend.dataset
+.\.venv\Scripts\python.exe -m backend.evaluate --per-class 128
+.\.venv\Scripts\python.exe -m pytest backend/tests
+npm.cmd run lint
+npm.cmd run typecheck
+npm.cmd run build
+```
 
-1. Confirm dataset access terms and provenance, split held-out data by patient or acquisition source where supported, and document the classes and preprocessing.
-2. Choose and disclose the encoder, pretrained weights, versions, and licenses. Implement the Python/PyTorch inference service and a class-name baseline.
-3. Validate the request and response on the service boundary, including limits on file size, type, and decoded dimensions. Verify the service and select its approved hosting and data-retention policy before connecting it.
-4. Evaluate both approaches on the held-out split. Document per-class performance, failure cases, and score semantics. Display probabilities only if calibration has been evaluated.
-5. Wire, test, and enable the real service adapter. Update the privacy copy to explain the destination and handling of uploaded images before enabling transmission.
+The archive, weights, manifest, and detailed per-image predictions stay under the Git-ignored `.medilens/` directory. See the [research report](research/step-2.md) and [inference contract](docs/inference-contract.md).
+
+In the initial 256-crop held-out benchmark, the class-name baseline labeled every crop parasitized. The experimental prompts identified 7 of 128 parasitized crops. These results illustrate the limits of this checkpoint and prompt setup. [Machine-readable results](research/step-2-results.json)
 
 ## Third-party disclosures
 
-| Material | Status |
+| Material | Use |
 | --- | --- |
-| Next.js, React, Tailwind CSS, ESLint, and related tooling | Open-source packages listed in `package.json` and `package-lock.json`. Use the resolved packages for their redistribution notices. |
-| TypeScript and Lucide React | Open-source packages listed in the lockfile. See the respective package license notices, including any inherited icon notices. |
-| [NLM Falciparum Thin Cell Images](https://lhncbc.nlm.nih.gov/LHC-research/LHC-projects/image-processing/malaria-datasheet.html) | Candidate only. Dataset release, terms, attribution, and data split are pending verification before use. No dataset files are included. |
-| [CLIP paper](https://proceedings.mlr.press/v139/radford21a.html) | Conceptual reference. Encoder, model code, weight versions, and applicable licenses are pending selection. |
-| [Knowledge Proxy Learning (KPL)](https://arxiv.org/abs/2501.11231) | Research inspiration. No KPL implementation or weights were imported. |
-| Landing-page artwork | Generated with OpenAI image generation. It is an illustration and contains no patient data. |
+| [OpenAI CLIP ViT-B/32 checkpoint](https://huggingface.co/openai/clip-vit-base-patch32/tree/3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268) | Pinned general-purpose research weights and tokenizer. Upstream [OpenAI CLIP software is MIT-licensed](https://github.com/openai/CLIP/blob/main/LICENSE). The [checkpoint model card](https://huggingface.co/openai/clip-vit-base-patch32) describes research use and puts deployed use out of scope. |
+| [Original CLIP paper](https://proceedings.mlr.press/v139/radford21a.html) and [Knowledge Proxy Learning](https://arxiv.org/abs/2501.11231) | Prior research. Step 2 uses fixed English prompts and cosine scoring. KPL is future research. |
+| [CDC DPDx malaria morphology](https://www.cdc.gov/dpdx/malaria/) | Source for the experimental prompt wording. No CDC images are included. |
+| Python dependencies | PyTorch, Hugging Face Transformers, Pillow, FastAPI/Pydantic, Uvicorn, pytest, and HTTPX. The tested core versions are in the report and requirements. |
+| Frontend dependencies | Next.js App Router, React, Tailwind CSS, TypeScript, Lucide React, and ESLint, with resolved versions in `package-lock.json`. |
+| Landing-page artwork | OpenAI-generated illustration. |
 
-OpenAI Codex assisted with implementation, documentation, and verification. OpenAI image generation produced the landing-page illustration.
+OpenAI Codex assisted with the source implementation, research documentation, and verification. OpenAI image generation produced the landing-page illustration.
 
-## Intended use and limitations
+## Intended use
 
-For research and education only. Do not use for clinical diagnosis, treatment, or patient care. Only use de-identified research or test images. Step 1 includes no inference service, model weights, clinical validation, calibration, or evaluation results. Cell-level performance, if established later, would not establish patient-level performance.
+Research and education only. Use de-identified research or test images. Do not use the prototype for diagnosis, treatment, patient care, or patient-level conclusions. The model is general-purpose CLIP, chooses from two classes even for out-of-scope inputs, and has no clinical validation or probability calibration.

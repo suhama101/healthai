@@ -1,0 +1,173 @@
+{
+  "scope": "deterministic class-balanced patient-grouped held-out subset",
+  "sample_seed": "medilens-held-out-sample-v1",
+  "requested_per_class": 128,
+  "images_evaluated": 256,
+  "class_counts": {
+    "parasitized": 128,
+    "uninfected": 128
+  },
+  "groups_evaluated": 35,
+  "dataset_audit": {
+    "inputs_sha256": {
+      "cell_images.zip": "0a949556b2414159b5100192609805376654c4266d8d187be9b1922fad43c668",
+      "patientid_cellmapping_parasitized.csv": "d0367e513397404e980baee2a641bce9ce329a22e62ea9007962dfca2f8418d3",
+      "patientid_cellmapping_uninfected.csv": "a8577b21e7154724f4bbd18326218e2c63a99b22ab372b79a7530d36df6dab78"
+    },
+    "class_counts": {
+      "parasitized": 13779,
+      "uninfected": 13779
+    },
+    "formats": {
+      "PNG": 27558
+    },
+    "published_mapping_rows": {
+      "parasitized": 151,
+      "uninfected": 201
+    },
+    "mapping_ids_in_archive": 201,
+    "mapped_images": 27558,
+    "unmatched_mapping_entries": {
+      "parasitized": 0,
+      "uninfected": 0
+    },
+    "source_pattern_images": 27558,
+    "duplicate_byte_entries": 0,
+    "cross_label_duplicate_hashes": 0,
+    "split_seed": "medilens-nlm-split-v1",
+    "splits": {
+      "development": {
+        "class_counts": {
+          "parasitized": 10716,
+          "uninfected": 11320
+        },
+        "groups": 165
+      },
+      "held-out": {
+        "class_counts": {
+          "parasitized": 3063,
+          "uninfected": 2459
+        },
+        "groups": 35
+      }
+    },
+    "manifest_sha256": "ee9b684910710414018632dfc826d7067a238e76888373ba28d58ac4fc6c9fa7"
+  },
+  "model": {
+    "id": "openai/clip-vit-base-patch32",
+    "revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+    "weights_sha256": "a63082132ba4f97a80bea76823f544493bffa8082296d62d71581a4feff1576f"
+  },
+  "hardware": {
+    "cpu": "AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD",
+    "device": "cpu",
+    "cpu_threads": 4,
+    "python": "3.12.10",
+    "torch": "2.14.0+cpu",
+    "transformers": "4.57.6"
+  },
+  "prompts": {
+    "class-name": [
+      "A thin blood smear image of a parasitized red blood cell.",
+      "A thin blood smear image of an uninfected red blood cell."
+    ],
+    "knowledge-guided": [
+      "A Giemsa-stained red blood cell containing a delicate malaria parasite ring with a small dark chromatin dot.",
+      "A Giemsa-stained red blood cell with pale pink cytoplasm and no visible intracellular parasite ring or chromatin dot."
+    ]
+  },
+  "methods": {
+    "class-name": {
+      "accuracy": 0.5,
+      "precision_parasitized": 0.5,
+      "recall_parasitized": 1.0,
+      "f1_parasitized": 0.6666666666666666,
+      "confusion_matrix": {
+        "order": [
+          "parasitized",
+          "uninfected"
+        ],
+        "rows_actual_columns_predicted": [
+          [
+            128,
+            0
+          ],
+          [
+            128,
+            0
+          ]
+        ]
+      }
+    },
+    "knowledge-guided": {
+      "accuracy": 0.50390625,
+      "precision_parasitized": 0.5384615384615384,
+      "recall_parasitized": 0.0546875,
+      "f1_parasitized": 0.09929078014184398,
+      "confusion_matrix": {
+        "order": [
+          "parasitized",
+          "uninfected"
+        ],
+        "rows_actual_columns_predicted": [
+          [
+            7,
+            121
+          ],
+          [
+            6,
+            122
+          ]
+        ]
+      }
+    }
+  },
+  "paired_latency_ms": {
+    "scope": "single-image decode, preprocessing, shared image encoder and both score vectors; excludes model load, warmup, archive I/O, and HTTP",
+    "mean": 108.76855781248196,
+    "median": 107.550849999825,
+    "p95": 127.11967499853927
+  },
+  "examples": [
+    {
+      "image_sha256": "d9d38c4029081b257315ae2316d74306c2a7905fb45788e82f0b11ad77ea6a54",
+      "actual": "parasitized",
+      "predictions": {
+        "class-name": {
+          "label": "parasitized",
+          "scores": {
+            "parasitized": 0.2996779978275299,
+            "uninfected": 0.29284751415252686
+          }
+        },
+        "knowledge-guided": {
+          "label": "parasitized",
+          "scores": {
+            "parasitized": 0.292025625705719,
+            "uninfected": 0.2910642623901367
+          }
+        }
+      }
+    },
+    {
+      "image_sha256": "1035a72e45bb306c58430f8d4d99d542e859efa8201e240172f927612ce04ba9",
+      "actual": "uninfected",
+      "predictions": {
+        "class-name": {
+          "label": "parasitized",
+          "scores": {
+            "parasitized": 0.2769816517829895,
+            "uninfected": 0.2694130837917328
+          }
+        },
+        "knowledge-guided": {
+          "label": "parasitized",
+          "scores": {
+            "parasitized": 0.27485933899879456,
+            "uninfected": 0.27213993668556213
+          }
+        }
+      }
+    }
+  ]
+}

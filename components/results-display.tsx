@@ -1,5 +1,5 @@
 import { ClipboardList } from "lucide-react";
-import type { PredictionResponse, ResearchClass } from "@/lib/inference";
+import { methodLabels, type PredictionResponse, type ResearchClass } from "@/lib/inference";
 
 const labels: Record<ResearchClass, string> = {
   parasitized: "Parasitized",
@@ -19,6 +19,7 @@ export function ResultsDisplay({ result }: { result: PredictionResponse | null }
           <div className="result-content">
             <dl>
               <div><dt>Predicted research class</dt><dd>{labels[result.predictedClass]}</dd></div>
+              <div><dt>Method</dt><dd>{methodLabels[result.method]}</dd></div>
               <div><dt>Model</dt><dd>{result.model.name} · {result.model.version}</dd></div>
               {result.baseline && (
                 <div><dt>Baseline</dt><dd>{result.baseline.name} · {result.baseline.version} · {labels[result.baseline.predictedClass]}</dd></div>
@@ -33,7 +34,7 @@ export function ResultsDisplay({ result }: { result: PredictionResponse | null }
                     <div key={label}><dt>{labels[label]}</dt><dd>
                       {scores.kind === "calibrated_probability"
                         ? scores.values[label].toLocaleString(undefined, { style: "percent", maximumFractionDigits: 2 })
-                        : scores.values[label]}
+                        : scores.values[label].toFixed(4)}
                     </dd></div>
                   ))}
                 </dl>
