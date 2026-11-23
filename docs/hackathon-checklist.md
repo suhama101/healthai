@@ -1,10 +1,13 @@
 # Hackathon submission checklist
 
-- [ ] Confirm the public source URL and README from a signed-out browser. [Official GitHub repository](https://github.com/suhama101/healthai)
-- [ ] Provide an approved deployed prototype URL when available. Confirm the requirement and the permitted local or restricted fallback with the organizers if a hosted inference URL is unavailable.
+The CYE competition rulebook requires a working live link for web or cloud projects, a walkthrough of at most two minutes, and a slide deck in PDF or PPTX. The finale format is a five-minute maximum pitch and two minutes of jury Q&A. The submission deadline is November 28, 2026 at 11:59 PM Pakistan time. [Official CYE Hackathon rulebook](https://www.capitalyouthexpo.com/rulebooks/04-hackathon.pdf)
+
+- [x] Verify public access to the source repository and README. [Official GitHub repository](https://github.com/suhama101/healthai)
+- [ ] Publish and verify the dedicated Vercel frontend URL. [Import and verification steps](vercel-launch.md)
+- [ ] Resolve the hosted-prototype requirement with the organizers. A frontend preview with Analyze disabled requires organizer acceptance if submitted with the offline jury demo.
 - [ ] Record a walkthrough of up to two minutes from a real local session. Label the recording as a recording and identify whether any linked web preview has live inference.
 - [ ] Export the presentation as PDF or PPTX. Include the research question, frozen model, split audit, measured results, licensing and accuracy limits, and an architecture slide.
-- [ ] Rehearse the five-minute pitch and two-minute Q&A. Keep an explanation of the distinction between supervised ridge and KPL, the held-out comparison, and false-negative examples.
+- [ ] Rehearse the five-minute pitch and two-minute Q&A. [Walkthrough and pitch outline](submission-demo.md)
 - [ ] Include NLM, CLIP, BiomedCLIP, software, artwork, and AI-assistant credits. Describe the original implementation and research workflow.
 - [ ] Include the research-only disclaimer, uncalibrated-score labels, scope of group separation, and absence of external or clinical validation.
 

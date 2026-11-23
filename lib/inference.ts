@@ -86,7 +86,7 @@ function isPrediction(value: unknown): value is PredictionResponse {
 }
 
 export function createInferenceService(baseUrl: string | undefined): InferenceService {
-  if (!baseUrl?.trim()) return { status: "disconnected", message: "AI inference is not configured" };
+  if (!baseUrl?.trim()) return { status: "disconnected", message: "Online inference is unavailable. Image preview is available." };
 
   let origin: string;
   try {

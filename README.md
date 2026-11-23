@@ -84,6 +84,8 @@ For research and education only. Use de-identified research or test images. The 
 
 ## Deployment and submission
 
+**Live frontend URL** — pending Vercel project import and verification. **Hosted AI inference** — unavailable. The prepared laptop runs genuine local inference with the frozen release.
+
 The [official source repository](https://github.com/suhama101/healthai) uses `main` for automatic frontend checks and builds. The standard Next.js build is suitable for Vercel, and `MEDILENS_STATIC_EXPORT=1` generates static files. Set `NEXT_PUBLIC_MEDILENS_API_URL` at build time only for an authorized, reachable HTTPS research backend. An unset value keeps Analyze disabled.
 
-The [deployment guide](docs/deployment.md) covers the Docker backend, frozen artifact transfer, hosting costs, and release boundaries. The [submission checklist](docs/hackathon-checklist.md) includes the offline jury procedure and the hosted-prototype requirement. The supported demo is local research inference.
+Follow the [Vercel launch instructions](docs/vercel-launch.md) to import the dedicated project and verify its returned URL. The [deployment guide](docs/deployment.md) covers the Docker backend, frozen artifact transfer, hosting costs, and release boundaries. The [demo script and pitch outline](docs/submission-demo.md) and [submission checklist](docs/hackathon-checklist.md) cover the offline jury session and the unresolved hosted-prototype requirement.
