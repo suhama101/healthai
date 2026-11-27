@@ -19,7 +19,7 @@ $env:NEXT_PUBLIC_MEDILENS_API_URL = 'http://127.0.0.1:8000'
 npm.cmd run dev -- --hostname 127.0.0.1
 ```
 
-Confirm that `http://127.0.0.1:8000/health` returns ready, method `clip-ridge`, and revision `3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268`. In the Step 1 revision, open `http://127.0.0.1:3000/research#upload-preview` for the Local model demo. If the backend stops, restart it with the same cached files, wait for health readiness, and retry. Loopback works without event Wi-Fi. Use a clearly labeled recording if the laptop cannot run the live session.
+Confirm that `http://127.0.0.1:8000/health` returns ready, method `clip-ridge`, and revision `3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268`. In the Technology & Validation revision, open `http://127.0.0.1:3000/workspace/local-model` through the configured development server. If the backend stops, restart it with the same cached files, wait for health readiness, and retry. Loopback works without event Wi-Fi. Use a clearly labeled recording if the laptop cannot run the live session.
 
 ## Before showing local inference
 

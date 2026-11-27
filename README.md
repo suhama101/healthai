@@ -19,7 +19,7 @@ Capital Youth Expo 2026 · Healthcare Hackathon
 | Working feature | What judges can verify |
 | --- | --- |
 | Laboratory Workspace | Fictional demo cases, browser-local JPEG/PNG preview, saved human observations and review status, and downloadable PDF reports. Analyze Image is disabled and the Analysis Result panel shows its availability. |
-| Research page | The locked-test benchmark, interactive precomputed comparison, model selection, confusion matrix, sources, and limitations. The public microscopy sample panel is unavailable pending release clearance. |
+| Technology & Validation | A plain-language overview of the held-out 384-crop benchmark and why independent clinical validation is still needed. Expand the technical sections for all seven methods, results, and sources. |
 | Local model demo | The offline FastAPI service verifies the cached release, runs the frozen CLIP encoder and fitted ridge head, and displays a genuinely computed crop label and raw scores. The image is sent to the laptop’s loopback API only when Analyze is selected. |
 
 **What we tested.** Standard CLIP used fixed class-name prompts. Knowledge-guided CLIP used fixed descriptions of visible morphology. The supervised pipeline froze the OpenAI CLIP ViT-B/32 encoder, extracted 512 normalized image features, and fitted ridge on 768 labeled development crops. Selection prioritized weaker-class recall on 256 validation crops before the 384-crop locked test. Knowledge Proxy Learning (KPL) is prior research that motivated the prompt comparison. The project does not implement KPL’s proxy optimization or multimodal proxy learning. [Step 2 audit](research/step-2.md) · [Step 3 methodology](research/step-3.md) · [KPL paper](https://arxiv.org/abs/2501.11231)
@@ -46,6 +46,7 @@ IndexedDB keeps the notes and a canvas-generated image preview in the browser. T
 - **AI assistance.** OpenAI Codex assisted development, research auditing, verification, and documentation. OpenAI image generation produced the credited homepage illustration. The declared team contribution is the workspace, local inference integration, grouped benchmark and model-selection workflow, and presentation of the verified results.
 - **Laboratory MVP increment.** Added the fictional case workflow, human review, browser-local image storage and deletion, and PDF export after the existing November 27 research comparison release. OpenAI Codex assisted with implementation, testing, and documentation. The previously published research, frozen release lock, and inference settings were preserved.
 - **Step 1 UX revision.** Reorganized the Workspace around image upload, analysis availability, human review, and report download. Moved the interactive comparison and prepared local model demo into Research. OpenAI Codex assisted with UX design, implementation, and verification.
+- **Technology & Validation revision.** Reframed `/research` around the limited held-out benchmark and independent clinical validation. Added expandable technical evidence, removed public upload and empty sample controls from the page, and preserved offline rehearsal at `/workspace/local-model`. OpenAI Codex assisted with design, implementation, documentation, and verification.
 
 ## Start the prepared local demo
 
@@ -63,7 +64,7 @@ $env:NEXT_PUBLIC_MEDILENS_API_URL = 'http://127.0.0.1:8000'
 npm.cmd run dev -- --hostname 127.0.0.1
 ```
 
-Open `http://127.0.0.1:3000/research#upload-preview`. The local demo enables Analyze after the locked backend is ready and a valid crop is selected. Its result identifies the method and pretrained revision. The local demo sends the crop to the loopback service only when Analyze is selected. The [inference contract](docs/inference-contract.md) covers score labels, limits, errors, and method availability.
+Open `http://127.0.0.1:3000/workspace/local-model` in the development server for this revision. The route requires a loopback API configuration. The local demo enables Analyze after the locked backend is ready and a valid crop is selected. Its result identifies the method and pretrained revision. The local demo sends the crop to the loopback service only when Analyze is selected. The [inference contract](docs/inference-contract.md) covers score labels, limits, errors, and method availability.
 
 ## One-time setup for a fresh checkout
 

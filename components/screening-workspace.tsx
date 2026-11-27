@@ -1,6 +1,7 @@
 "use client";
 
 import { CircleAlert, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnalysisControls } from "@/components/analysis-controls";
 import { ImagePreview } from "@/components/image-preview";
@@ -142,7 +143,7 @@ function Workspace({ service }: { service: InferenceService }) {
         {service.status === "disconnected" && <p className="workspace-status-help">Online inference is unavailable. You can preview images in this browser.</p>}
         {readiness === "unavailable" && <p className="workspace-status-help">Online inference is currently unavailable. The workspace will check the configured service again automatically.</p>}
         {(readiness === "preview" || readiness === "unavailable") && (
-          <p className="workspace-status-help"><a className="text-link" href="#research-demo">Explore precomputed research results</a></p>
+          <p className="workspace-status-help"><Link className="text-link" href="/research#research-demo">Explore precomputed research results</Link></p>
         )}
         <p className="workspace-privacy">
           <ShieldCheck size={17} aria-hidden="true" />

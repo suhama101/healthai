@@ -1,8 +1,7 @@
 "use client";
 
-import { FlaskConical, ImageOff, Microscope } from "lucide-react";
+import { FlaskConical, Microscope } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useState } from "react";
 import type { DemoSample, PublishedMethod } from "@/lib/research-demo";
 
@@ -67,37 +66,26 @@ export function ResearchDemo({ methods, samples }: {
       <div className="demo-banner">
         <FlaskConical size={22} aria-hidden="true" />
         <div>
-          <h2 id="research-demo-title" tabIndex={-1}>Precomputed Research Demonstration — Not Live Image Analysis</h2>
+          <h3 id="research-demo-title" tabIndex={-1}>Precomputed Research Demonstration — Not Live Image Analysis</h3>
           <p>Explore stored experimental results without a model connection. For research and education only.</p>
         </div>
       </div>
-      <div className="workspace-grid">
-        <section className="panel" aria-labelledby="demo-samples-title">
+      <div className={sample ? "workspace-grid" : undefined}>
+        {sample && <section className="panel" aria-labelledby="demo-samples-title">
           <div className="panel-heading">
             <span className="icon-tile"><Microscope size={21} aria-hidden="true" /></span>
-            <div><h3 id="demo-samples-title">Microscopy examples</h3><p>Development crops with stored results</p></div>
+            <div><h4 id="demo-samples-title">Microscopy examples</h4><p>Development crops with stored results</p></div>
           </div>
-          {sample ? (
-            <>
-              <label className="demo-select" htmlFor="demo-sample">Choose a research example
-                <select id="demo-sample" value={sample.id} onChange={(event) => setSampleId(event.target.value)}>
-                  {samples.map(({ id, title }) => <option key={id} value={id}>{title}</option>)}
-                </select>
-              </label>
-              <SampleDetails key={sample.id} sample={sample} methods={methods} />
-            </>
-          ) : (
-            <div className="results-empty">
-              <ImageOff size={30} strokeWidth={1.5} aria-hidden="true" />
-              <h4>Sample results unavailable</h4>
-              <p>Development images and their paired predictions are pending public release clearance.</p>
-              <Link className="text-link" href="/workspace#demo-cases">Review a de-identified image in the Workspace</Link>
-            </div>
-          )}
-        </section>
+          <label className="demo-select" htmlFor="demo-sample">Choose a research example
+            <select id="demo-sample" value={sample.id} onChange={(event) => setSampleId(event.target.value)}>
+              {samples.map(({ id, title }) => <option key={id} value={id}>{title}</option>)}
+            </select>
+          </label>
+          <SampleDetails key={sample.id} sample={sample} methods={methods} />
+        </section>}
         <section className="panel demo-comparison" aria-labelledby="demo-comparison-title">
           <div className="panel-heading">
-            <div><h3 id="demo-comparison-title">Compare research methods</h3><p>Published aggregate benchmark · OpenAI CLIP ViT-B/32</p></div>
+            <div><h4 id="demo-comparison-title">Compare research methods</h4><p>Published aggregate benchmark · OpenAI CLIP ViT-B/32</p></div>
           </div>
           <fieldset className="demo-method-picker">
             <legend>Choose a method</legend>
@@ -121,7 +109,6 @@ export function ResearchDemo({ methods, samples }: {
               </dl>
             </div>
           )}
-          <a className="text-link" href="#comparison">View the full benchmark and methodology</a>
         </section>
       </div>
     </section>

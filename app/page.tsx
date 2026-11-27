@@ -15,7 +15,7 @@ export default function Home() {
             <p className="hero-description">A research prototype for malaria cell-crop classification, with a held-out comparison of vision-language prompts and supervised classifiers.</p>
             <div className="button-row">
               <Link href="/workspace" className="button button-primary"><ScanLine size={19} aria-hidden="true" /> Try the Demo</Link>
-              <Link href="/research" className="button button-secondary">Explore Research</Link>
+              <Link href="/research" className="button button-secondary">Technology &amp; Validation</Link>
             </div>
             <p className="hero-privacy"><ShieldCheck size={17} aria-hidden="true" /> Image previews stay in your browser</p>
           </div>

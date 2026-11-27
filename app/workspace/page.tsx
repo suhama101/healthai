@@ -14,7 +14,7 @@ export default function WorkspacePage() {
       <div className="container inner-content">
         <nav className="research-nav" aria-label="Workspace sections">
           <a href="#demo-cases">Demo cases</a>
-          <Link id="research-demo" href="/research#research-demo">Research comparison</Link>
+          <Link id="research-demo" href="/research">Technology &amp; Validation</Link>
         </nav>
         <DemoCaseWorkspace />
         <ResearchNotice />
