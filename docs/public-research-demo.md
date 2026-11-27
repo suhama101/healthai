@@ -1,0 +1,21 @@
+# Public Workspace research demonstration
+
+The Workspace lets visitors compare the published Standard CLIP, Knowledge-guided CLIP, and Supervised CLIP + Ridge results in a browser. The three methods use OpenAI CLIP ViT-B/32 and the same locked-test cohort. The Workspace displays aggregate metrics directly from [the published experiment results](../research/step-3-results.json). The supervised ridge classifier was selected on validation. The knowledge-guided prompt experiment is distinct from the KPL work cited as future research. [Research protocol and results](../research/step-3.md)
+
+A frontend built with `NEXT_PUBLIC_MEDILENS_API_URL` unset serves the demonstration and browser-local upload preview without FastAPI or model weights. With a configured, ready service, the existing Analyze button continues to request an inference result for the selected upload. The upload section is available at `/workspace#upload-preview`.
+
+## Example release status
+
+The public sample allowlist is empty. Both locally staged demo PNGs match by SHA-256 to labeled NLM crops from the legacy development split. Their groups are represented in the later development manifest and are absent from both reserved test group sets. The previous loopback verification documented their predicted classes for the ridge method. The [NLM datasheet](https://www.lhncbc.nlm.nih.gov/LHC-research/LHC-projects/image-processing/malaria-datasheet.html) and [original archive listing](https://data.lhncbc.nlm.nih.gov/public/Malaria/index.html) identify the source. Public redistribution permission for these exact PNGs has yet to be verified. The staged files and private experiment records remain under `.medilens/`.
+
+To add a sample to the [public allowlist](../lib/research-demo.ts), record the rights holder's terms or permission covering that exact crop and the planned public display. Privately verify its image digest, dataset label, and development membership against the source and split manifests. Exclude crops whose group, source field, or digest appears in a locked-test set, including the legacy holdout. Match the crop digest to genuine saved experimental output and record the predicted class, model revision, score type, and both raw class scores. Include only methods with verified output for that crop. Confirm public release clearance for the pair and keep original identifiers, full manifests, training artifacts, and model files private. Publish only approved image bytes and the corresponding minimal sample entry, with source and redistribution credits. Prompt cosine similarities and raw ridge outputs are uncalibrated and use different scales.
+
+## Hackathon originality and AI assistance
+
+The baseline for this work is commit `ce49996` from November 24, 2026. It already contained the MediLens website, browser upload preview, local inference integration, pinned release, research protocol, model selection, and published benchmark. Credit that work as existing project work when presenting this update. Competition-window eligibility for prior commits should be checked against the event's dates before making originality claims.
+
+The November 27 Step 2 increment adds Workspace navigation, an interactive browser-only comparison using the existing published benchmark, a release-gated sample view, and clearer upload status when a model service is unavailable. OpenAI Codex assisted with implementation, verification, and documentation. [Existing project credits](../README.md) · [Hackathon checklist](hackathon-checklist.md)
+
+## Hosted inference requirements
+
+Hosted inference needs documented clearance for the exact checkpoint and intended audience, approved Linux hosting with private artifact staging, and a browser-compatible HTTPS access design. The deployed backend must verify the locked runtime, model files, and fitted ridge head against `backend/release-lock.json` and warm up before reporting ready. Validate the exact frontend origin, authentication, request limits, disallowed origins, and image logging and retention behavior. Test `/health`, a genuine authorized prediction, mobile browser behavior, and failure recovery on the actual host. A production endpoint or Vercel configuration change requires owner approval. [Restricted hosting and verification runbook](restricted-inference.md)

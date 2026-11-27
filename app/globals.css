@@ -258,6 +258,32 @@ h3 { font-size: 1.12rem; letter-spacing: -.022em; }
 .result-limitations { border-top: 1px solid var(--line); padding-top: .85rem; color: var(--muted); font-size: .91rem; }
 .result-limitations h3 { color: var(--ink); }
 
+.research-demo, #upload-preview { display: grid; gap: 1rem; }
+#upload-preview-title { font-size: clamp(1.3rem, 2.4vw, 1.7rem); }
+.demo-banner { display: flex; align-items: flex-start; gap: .8rem; padding: 1rem 1.2rem; border-radius: .85rem; background: var(--pale); color: var(--teal-dark); }
+.demo-banner svg { flex: none; margin-top: .2rem; }
+.demo-banner h2 { font-size: clamp(1.15rem, 2.5vw, 1.45rem); line-height: 1.35; }
+.demo-banner p { margin-top: .3rem; }
+.demo-comparison { display: grid; gap: 1rem; }
+.demo-comparison .panel-heading { margin-bottom: 0; }
+.demo-method-picker { min-width: 0; }
+.demo-method-picker legend, .demo-select { font-weight: 700; }
+.demo-method-picker > div { display: grid; gap: .4rem; margin-top: .5rem; }
+.demo-method-picker label { display: flex; align-items: center; gap: .6rem; min-height: 2.75rem; padding: .45rem .75rem; border: 1px solid var(--line); border-radius: .55rem; cursor: pointer; }
+.demo-method-picker label:has(input:checked) { color: var(--teal-dark); border-color: var(--teal); background: var(--pale); }
+.demo-method-picker input { width: 1rem; height: 1rem; margin: 0; accent-color: var(--teal); }
+.demo-benchmark, .demo-sample-details, .demo-sample-results { display: grid; gap: .65rem; }
+.demo-scores { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); gap: .45rem; }
+.demo-scores > div { padding: .55rem .65rem; border-radius: .5rem; background: var(--wash); overflow-wrap: anywhere; }
+.demo-scores dt, .demo-sample-details figcaption { font-size: .875rem; color: var(--muted); }
+.demo-scores dd { font-weight: 700; font-variant-numeric: tabular-nums; }
+.demo-select { display: grid; gap: .4rem; margin-bottom: 1rem; }
+.demo-select select { width: 100%; min-height: 2.75rem; padding: .45rem .75rem; border: 1px solid var(--line); border-radius: .55rem; background: white; }
+.demo-sample-details img { width: 100%; height: auto; max-height: 17rem; object-fit: contain; border-radius: .55rem; background: var(--wash); }
+.demo-sample-details figcaption { margin-top: .4rem; }
+.demo-sample-method { padding: .7rem; border: 1px solid var(--line); border-radius: .55rem; overflow-wrap: anywhere; }
+.demo-sample-method .demo-scores { margin-top: .45rem; }
+
 .step-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .step-card { display: flex; align-items: start; gap: .85rem; }
 .step-card p:not(.step-label), .about-grid p { margin-top: .65rem; }

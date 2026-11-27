@@ -6,7 +6,11 @@ const labels: Record<ResearchClass, string> = {
   uninfected: "Uninfected",
 };
 
-export function ResultsDisplay({ result, busy }: { result: PredictionResponse | null; busy: boolean }) {
+export function ResultsDisplay({ result, busy, previewOnly }: {
+  result: PredictionResponse | null;
+  busy: boolean;
+  previewOnly: boolean;
+}) {
   const scores = result?.scores;
   return (
     <section className="panel results-panel" aria-labelledby="results-title">
@@ -49,8 +53,13 @@ export function ResultsDisplay({ result, busy }: { result: PredictionResponse | 
         ) : (
           <div className="results-empty">
             {busy ? <ScanLine size={34} strokeWidth={1.5} aria-hidden="true" /> : <ClipboardList size={34} strokeWidth={1.5} aria-hidden="true" />}
-            <h3>{busy ? "Analyzing the selected crop" : "No analysis yet"}</h3>
-            <p>{busy ? "Waiting for the model service to return a research result." : "A research class and model scores will appear after a completed analysis."}</p>
+            {busy ? (
+              <><h3>Analyzing the selected crop</h3><p>Waiting for the model service to return a research result.</p></>
+            ) : previewOnly ? (
+              <><h3>Image preview only</h3><p>Upload predictions require a connected model service.</p></>
+            ) : (
+              <><h3>No analysis yet</h3><p>A research class and model scores will appear after a completed analysis.</p></>
+            )}
           </div>
         )}
       </div>

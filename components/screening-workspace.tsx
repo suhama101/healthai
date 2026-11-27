@@ -139,8 +139,11 @@ function Workspace({ service }: { service: InferenceService }) {
         <AnalysisControls canAnalyze={service.status === "configured" && availability === "ready" && Boolean(preview) && !validating}
           busy={analyzing} state={readiness} onAnalyze={analyze} message={status}
           onClear={clear} canClear={Boolean(preview || error || validating)} />
-        {service.status === "disconnected" && <p className="workspace-status-help">{service.message}</p>}
-        {readiness === "unavailable" && <p className="workspace-status-help">Start the configured model service. The workspace will check again automatically.</p>}
+        {service.status === "disconnected" && <p className="workspace-status-help">Online inference is unavailable. You can preview images in this browser.</p>}
+        {readiness === "unavailable" && <p className="workspace-status-help">Online inference is currently unavailable. The workspace will check the configured service again automatically.</p>}
+        {(readiness === "preview" || readiness === "unavailable") && (
+          <p className="workspace-status-help"><a className="text-link" href="#research-demo">Explore precomputed research results</a></p>
+        )}
         <p className="workspace-privacy">
           <ShieldCheck size={17} aria-hidden="true" />
           <span>{service.status === "configured"
@@ -148,7 +151,7 @@ function Workspace({ service }: { service: InferenceService }) {
             : "Image previews stay in this browser tab."}</span>
         </p>
       </section>
-      <ResultsDisplay result={result} busy={analyzing} />
+      <ResultsDisplay result={result} busy={analyzing} previewOnly={readiness === "preview" || readiness === "unavailable"} />
     </div>
   );
 }
