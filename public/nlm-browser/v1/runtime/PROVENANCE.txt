@@ -1,0 +1,15 @@
+Google LiteRT.js browser runtime, version 2.6.0.
+Copyright 2025 Google LLC. Apache License 2.0. See LICENSE.txt.
+Source: https://github.com/google-ai-edge/LiteRT/tree/main/litert/js
+
+The runtime files come from the official npm archives below.
+
+https://registry.npmjs.org/@litertjs/core/-/core-2.6.0.tgz
+sha512-TH6/5zLq57YzyZH6q+vO8be1SvTH76uDFe+CiL0wWtRNTUDhc2GAWm2YCohhnyt4fPvefSNztg5PKFZGAYL0cw==
+https://registry.npmjs.org/@litertjs/wasm-utils/-/wasm-utils-2.6.0.tgz
+sha512-rxARtl8owf+aPV2TsMiAClYDBaEDemML3PjrzBxIpGCvv6POswR7068Kt0sIkrK5XvKkY2Z+JLcm3a9CHmvuUg==
+
+Only the single-threaded compatible CPU/WASM build is included.
+Modified litert.js to resolve its wasm-utils import to the local wasm-utils.js.
+The JavaScript Wasm loader, Wasm binary, and wasm-utils.js retain their
+published bytes. No Google runtime endpoint or CDN is used at inference time.

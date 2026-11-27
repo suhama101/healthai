@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { nlmSiteDemoEnabled } from "@/lib/nlm-demo-release";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,7 +13,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <a className="skip-link" href="#main-content">Skip to content</a>
-        <SiteHeader />
+        <SiteHeader showAnalyze={nlmSiteDemoEnabled()} />
         <main id="main-content" tabIndex={-1}>{children}</main>
         <SiteFooter />
       </body>

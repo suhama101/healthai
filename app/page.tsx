@@ -2,9 +2,11 @@ import { Aperture, BookOpen, FlaskConical, Microscope, ScanLine, ShieldCheck } f
 import Image from "next/image";
 import Link from "next/link";
 import cellIllustration from "@/public/cell-illustration.png";
-import { ResearchNotice, workflow } from "@/components/research-info";
+import { ResearchNotice, sampleWorkflow, workflow } from "@/components/research-info";
+import { nlmSiteDemoEnabled } from "@/lib/nlm-demo-release";
 
 export default function Home() {
+  const showAnalyze = nlmSiteDemoEnabled();
   return (
     <>
       <section className="hero">
@@ -14,10 +16,14 @@ export default function Home() {
             <h1>See Beyond the <span>Microscope.</span></h1>
             <p className="hero-description">A research prototype for malaria cell-crop classification, with a held-out comparison of vision-language prompts and supervised classifiers.</p>
             <div className="button-row">
-              <Link href="/workspace" className="button button-primary"><ScanLine size={19} aria-hidden="true" /> Try the Demo</Link>
+              <Link href={showAnalyze ? "/analyze" : "/workspace"} className="button button-primary">
+                <ScanLine size={19} aria-hidden="true" /> {showAnalyze ? "Analyze a Sample" : "Try the Demo"}
+              </Link>
               <Link href="/research" className="button button-secondary">Technology &amp; Validation</Link>
             </div>
-            <p className="hero-privacy"><ShieldCheck size={17} aria-hidden="true" /> Image previews stay in your browser</p>
+            <p className="hero-privacy"><ShieldCheck size={17} aria-hidden="true" />
+              {showAnalyze ? "Two included research samples. No uploads." : "Image previews stay in your browser"}
+            </p>
           </div>
           <figure className="hero-figure">
             <div className="hero-art">
@@ -52,7 +58,7 @@ export default function Home() {
             <Link href="/how-it-works" className="button button-secondary">How It Works</Link>
           </div>
           <ol className="workflow-grid">
-            {workflow.map(({ title, description, icon: Icon }) => (
+            {(showAnalyze ? sampleWorkflow : workflow).map(({ title, description, icon: Icon }) => (
               <li className="workflow-card" key={title}>
                 <span className="icon-tile"><Icon size={22} aria-hidden="true" /></span>
                 <h3>{title}</h3><p>{description}</p>

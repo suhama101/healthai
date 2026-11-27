@@ -22,10 +22,13 @@ function Brand() {
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ showAnalyze = false }: { showAnalyze?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
+  const demoLink = { href: "/analyze", label: "Analyze" };
+  const primary = showAnalyze ? demoLink : { href: "/workspace", label: "Open Workspace" };
+  const navigation = showAnalyze ? [links[0], links[2], demoLink, links[1], ...links.slice(3)] : links;
   return (
     <header className="site-header">
       <div className="container header-inner">
@@ -42,13 +45,13 @@ export function SiteHeader() {
               toggle.current?.focus();
             }
           }}>
-          {links.map(({ href, label }) => (
+          {navigation.map(({ href, label }) => (
             <Link key={href} href={href} aria-current={pathname === href ? "page" : undefined}
               onClick={() => setOpen(false)}>{label}</Link>
           ))}
         </nav>
-        <Link href="/workspace" className="button button-primary header-cta" onClick={() => setOpen(false)}>
-          Open Workspace
+        <Link href={primary.href} className="button button-primary header-cta" onClick={() => setOpen(false)}>
+          {primary.label}
         </Link>
       </div>
     </header>

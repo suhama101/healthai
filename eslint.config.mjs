@@ -5,5 +5,5 @@ import nextTypeScript from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTypeScript,
-  globalIgnores([".next/**", ".venv/**", ".medilens/**", "out/**", "next-env.d.ts"]),
+  globalIgnores([".next/**", ".venv/**", ".medilens/**", "out/**", "next-env.d.ts", "public/nlm-browser/v1/runtime/**"]),
 ]);

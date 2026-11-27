@@ -1,4 +1,4 @@
-import { FlaskConical, ScanLine, ShieldAlert, Upload, Workflow } from "lucide-react";
+import { FlaskConical, Images, ScanLine, ShieldAlert, Upload, Workflow } from "lucide-react";
 import type { ReactNode } from "react";
 
 export const workflow = [
@@ -6,6 +6,12 @@ export const workflow = [
   { title: "Validate and prepare", description: "The workspace checks the file and displays a preview. The local model service applies CLIP preprocessing.", icon: ScanLine },
   { title: "Run the model", description: "Select Analyze when the local service is ready. The selected research method scores the crop against two cell classes.", icon: Workflow },
   { title: "Review the result", description: "Inspect the research class, model details, and limitations returned by the connected service.", icon: FlaskConical },
+];
+
+export const sampleWorkflow = [
+  { title: "Choose a sample", description: "Select one of the two included blood-cell images.", icon: Images },
+  { title: "Analyze the sample", description: "The model runs on that image when you click Analyze.", icon: ScanLine },
+  { title: "Read the finding", description: "See the cell classification and a short research explanation.", icon: FlaskConical },
 ];
 
 export function PageIntro({ label, title, children }: { label: string; title: string; children: ReactNode }) {

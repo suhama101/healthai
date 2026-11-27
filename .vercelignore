@@ -3,6 +3,7 @@
 .venv/
 venv/
 .medilens/
+.cache/
 .next/
 out/
 node_modules/

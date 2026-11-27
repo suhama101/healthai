@@ -1,0 +1,25 @@
+{
+  "model": {
+    "name": "NLM Malaria Screener thin-smear TFLite",
+    "revision": "c485a211230c9acfe3f67280f7bb2831c4fd15e5",
+    "filename": "malaria_thinsmear_44.tflite",
+    "sha256": "d4a75d749d67fed9d8146f8a408f9509f2675012bcd0b1801ff15819fc56c94d"
+  },
+  "input": "verified-44x44-rgb-png-to-nhwc-float32-divide-255",
+  "decision": "parasitized-if-output-index-0-gte-0.5-else-uninfected",
+  "descriptionBank": "malaria-cell-v1",
+  "samples": [
+    {
+      "id": "sample-1",
+      "title": "Sample 1",
+      "sourceCell": "IMG_20150621_112116:3-1",
+      "imageSha256": "2cbb304cd1135670fc1050386394f871d5c49dcd14c8d5f2c0ca2e9073f38785"
+    },
+    {
+      "id": "sample-2",
+      "title": "Sample 2",
+      "sourceCell": "IMG_20150621_112116:3-3",
+      "imageSha256": "dfe0310cfeb74c9cf22b6f0d765ed87500062bdf73fee3802a76e83165f3ba88"
+    }
+  ]
+}
