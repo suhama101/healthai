@@ -18,8 +18,8 @@ Capital Youth Expo 2026 · Healthcare Hackathon
 
 | Working feature | What judges can verify |
 | --- | --- |
-| Public Vercel Workspace | Fictional demo cases, browser-local JPEG/PNG preview, saved human observations and review status, and downloadable PDF reports. The Workspace also provides a precomputed comparison of three methods. Analyze is disabled. The public microscopy sample panel is unavailable pending release clearance. |
-| Public Research page | The locked-test benchmark, model selection, confusion matrix, sources, and limitations. |
+| Laboratory Workspace | Fictional demo cases, browser-local JPEG/PNG preview, saved human observations and review status, and downloadable PDF reports. Analyze Image is disabled and the Analysis Result panel shows its availability. |
+| Research page | The locked-test benchmark, interactive precomputed comparison, model selection, confusion matrix, sources, and limitations. The public microscopy sample panel is unavailable pending release clearance. |
 | Local model demo | The offline FastAPI service verifies the cached release, runs the frozen CLIP encoder and fitted ridge head, and displays a genuinely computed crop label and raw scores. The image is sent to the laptop’s loopback API only when Analyze is selected. |
 
 **What we tested.** Standard CLIP used fixed class-name prompts. Knowledge-guided CLIP used fixed descriptions of visible morphology. The supervised pipeline froze the OpenAI CLIP ViT-B/32 encoder, extracted 512 normalized image features, and fitted ridge on 768 labeled development crops. Selection prioritized weaker-class recall on 256 validation crops before the 384-crop locked test. Knowledge Proxy Learning (KPL) is prior research that motivated the prompt comparison. The project does not implement KPL’s proxy optimization or multimodal proxy learning. [Step 2 audit](research/step-2.md) · [Step 3 methodology](research/step-3.md) · [KPL paper](https://arxiv.org/abs/2501.11231)
@@ -33,9 +33,9 @@ Capital Youth Expo 2026 · Healthcare Hackathon
 Use the [public case workspace](https://healthai-lyart.vercel.app/workspace#demo-cases) with a current browser. The case workflow runs without a local backend or installation.
 
 1. Open **Workspace → Demo cases** and select **New demo case**. The browser creates a fictional case ID, timestamp, and Draft status.
-2. Optionally enter a fictional title. Attach one authorized, de-identified JPEG or PNG, inspect the preview, and enter human review observations. Keep patient identifiers out of both text and image pixels.
-3. Choose **Draft**, **Reviewed**, or **Needs Review**, then **Save changes**. Reopen saved cases from the same browser profile and website origin. Use **Delete case** or **Reset all demo cases** to clear them.
-4. Select **Download PDF** for a local report of the saved review, its status and timestamps, image format and dimensions, and research-only disclosures. Case files are never submitted for model inference. The existing research comparison and separately configured local inference workflow remain available.
+2. Under **Upload Image**, attach one authorized, de-identified JPEG or PNG and inspect the preview. The **Analysis Result** panel explains that automatic analysis is unavailable. Keep patient identifiers out of text and image pixels.
+3. Under **Human Review**, enter observations and an optional fictional title. Choose **Draft**, **Reviewed**, or **Needs Review**, then **Save changes**. Reopen cases from the same browser profile and website origin. Use **Delete case** or **Reset all demo cases** to clear them.
+4. Select **Download Report** for a PDF of the saved review, status, timestamps, image information, and research-only disclosures. The report keeps human observations distinct from the unavailable analysis result. Case files stay in the browser.
 
 IndexedDB keeps the notes and a canvas-generated image preview in the browser. The app drops the original filename and embedded file metadata, and reports contain image information without embedding the image. Browser storage is temporary and accessible to people using the same profile. Exported PDFs remain under the visitor’s control after browser deletion. Accounts, shared records, secure patient-data storage, and clinical workflows are outside the MVP. [PDF generation library](https://github.com/bpampuch/pdfmake)
 
@@ -45,6 +45,7 @@ IndexedDB keeps the notes and a canvas-generated image preview in the browser. T
 - **Work documented inside November 16–28.** The public Git history starts November 23. It records the frontend, local integration, and evaluation on November 23, and release tooling and the Research dashboard on November 24. The November 27 commit added the public precomputed comparison and preview-only messaging. The November 24 baseline predated that update. Both are inside the published window. Git dates document the recorded history. The team must attest to when the core work was actually produced. [Commit history](https://github.com/suhama101/healthai/commits/main/) · [Public demonstration implementation](https://github.com/suhama101/healthai/commit/115891248bec8b36a42e248531a545d6d3851717)
 - **AI assistance.** OpenAI Codex assisted development, research auditing, verification, and documentation. OpenAI image generation produced the credited homepage illustration. The declared team contribution is the workspace, local inference integration, grouped benchmark and model-selection workflow, and presentation of the verified results.
 - **Laboratory MVP increment.** Added the fictional case workflow, human review, browser-local image storage and deletion, and PDF export after the existing November 27 research comparison release. OpenAI Codex assisted with implementation, testing, and documentation. The previously published research, frozen release lock, and inference settings were preserved.
+- **Step 1 UX revision.** Reorganized the Workspace around image upload, analysis availability, human review, and report download. Moved the interactive comparison and prepared local model demo into Research. OpenAI Codex assisted with UX design, implementation, and verification.
 
 ## Start the prepared local demo
 
@@ -62,7 +63,7 @@ $env:NEXT_PUBLIC_MEDILENS_API_URL = 'http://127.0.0.1:8000'
 npm.cmd run dev -- --hostname 127.0.0.1
 ```
 
-Open `http://127.0.0.1:3000/workspace`. Analyze is disabled until the backend finishes startup and a valid crop is selected. The result identifies the chosen method and pretrained revision. The workspace sends the file only when Analyze is selected. The loopback server processes it in memory. The [inference contract](docs/inference-contract.md) covers score labels, limits, errors, and method availability.
+Open `http://127.0.0.1:3000/research#upload-preview`. The local demo enables Analyze after the locked backend is ready and a valid crop is selected. Its result identifies the method and pretrained revision. The local demo sends the crop to the loopback service only when Analyze is selected. The [inference contract](docs/inference-contract.md) covers score labels, limits, errors, and method availability.
 
 ## One-time setup for a fresh checkout
 

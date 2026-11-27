@@ -1,7 +1,7 @@
 "use client";
 
-import { Download, FilePlus2, FlaskConical, FolderOpen, ImageIcon, ShieldAlert, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { Download, FilePlus2, FolderOpen, ImageIcon, ScanLine, ShieldAlert, Trash2, Upload } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   caseDate, caseImageInfo, createDemoCase, deleteDemoCase, loadDemoCases, prepareDemoImage, readDemoCase,
   resetDemoCases, reviewStatuses, saveDemoCase, type DemoCase, type DemoImage, type ReviewStatus,
@@ -36,6 +36,8 @@ export function DemoCaseWorkspace() {
   const [error, setError] = useState("");
   const [feedback, setFeedback] = useState("");
   const [refreshNeeded, setRefreshNeeded] = useState(false);
+  const editorHeading = useRef<HTMLHeadingElement>(null);
+  const focusEditor = useRef(false);
   const locked = Boolean(operation);
   const saved = cases?.find((item) => item.id === selectedId);
   const current = edits ?? saved;
@@ -51,6 +53,12 @@ export function DemoCaseWorkspace() {
     });
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    if (!focusEditor.current) return;
+    editorHeading.current?.focus();
+    focusEditor.current = false;
+  }, [selectedId]);
 
   async function perform(label: string, work: () => Promise<void>, failureMessage: string) {
     setOperation(label);
@@ -71,7 +79,8 @@ export function DemoCaseWorkspace() {
     return !edits || window.confirm("Discard unsaved changes to this demo case?");
   }
 
-  function selectCase(id: string | null) {
+  function selectCase(id: string | null, focus = false) {
+    focusEditor.current = focus;
     setSelectedId(id);
     setEdits(null);
     setFeedback("");
@@ -103,7 +112,7 @@ export function DemoCaseWorkspace() {
     await perform("Creating case…", async () => {
       const item = await createDemoCase();
       setCases((items) => [item, ...(items ?? [])]);
-      selectCase(item.id);
+      selectCase(item.id, true);
       setFeedback("Draft case created and saved in this browser.");
     }, "Could not create the demo case. Check that browser storage is available.");
   }
@@ -173,8 +182,7 @@ export function DemoCaseWorkspace() {
     <section id="demo-cases" className="case-workspace" aria-labelledby="demo-cases-title">
       <div className="case-header">
         <div>
-          <h2 id="demo-cases-title" tabIndex={-1}>Laboratory demo cases</h2>
-          <p>Create a fictional case, review a research image, and export a report.</p>
+          <h2 id="demo-cases-title" tabIndex={-1}>Demo cases</h2>
         </div>
         <button type="button" className="button button-primary" disabled={locked || !cases} onClick={create}>
           <FilePlus2 size={18} aria-hidden="true" /> New demo case
@@ -182,7 +190,7 @@ export function DemoCaseWorkspace() {
       </div>
       <aside className="case-notice" aria-label="Demo storage and privacy">
         <ShieldAlert size={20} aria-hidden="true" />
-        <p><strong>Temporary browser workspace.</strong> Use fictional details and authorized de-identified research images only. Keep patient names, identifiers, and clinical records out of notes and images. This browser profile’s users can access and delete saved cases. Use a secure record system for patient data.</p>
+        <p><strong>Temporary browser workspace.</strong> Use fictional details and authorized, de-identified research images. Keep patient information out of notes and images. Anyone using this browser profile can access or delete saved cases.</p>
       </aside>
       <div className="case-feedback">
         <p role="status">{operation || feedback || (!cases && !error ? "Loading saved demo cases…" : "")}</p>
@@ -191,7 +199,7 @@ export function DemoCaseWorkspace() {
           <button type="button" className="button button-secondary" onClick={refresh} disabled={locked}>Reload cases</button>
         )}
       </div>
-      <div className="case-layout">
+      <div className="case-layout" id="upload-preview">
         <section className="panel case-list" aria-labelledby="case-list-title">
           <h3 id="case-list-title">Saved cases{cases ? ` (${cases.length})` : ""}</h3>
           {cases?.length ? (
@@ -199,7 +207,7 @@ export function DemoCaseWorkspace() {
               {cases.map((item) => (
                 <li key={item.id}>
                   <button type="button" className="case-list-item" aria-pressed={item.id === selectedId} disabled={locked}
-                    onClick={() => { if (item.id !== selectedId && canLeaveEditor()) selectCase(item.id); }}>
+                    onClick={() => { if (item.id !== selectedId && canLeaveEditor()) selectCase(item.id, true); }}>
                     <strong>{item.title || item.id}</strong>
                     <span>{item.status} · {caseDate(item.createdAt)}</span>
                   </button>
@@ -216,58 +224,73 @@ export function DemoCaseWorkspace() {
           <form className="panel case-editor" aria-labelledby="case-editor-title" onSubmit={(event) => { event.preventDefault(); void save(); }}>
             <header className="case-editor-header">
               <div>
-                <h3 id="case-editor-title">{current.id}</h3>
+                <h3 id="case-editor-title" ref={editorHeading} tabIndex={-1}>{current.id}</h3>
                 <p>Created <time dateTime={current.createdAt}>{caseDate(current.createdAt)}</time></p>
               </div>
               <p className="case-saved-state" data-dirty={Boolean(edits)}>{edits ? "Unsaved changes" : "Saved in this browser"}</p>
             </header>
-            <div className="case-fields">
-              <label htmlFor="case-title"><span>Fictional case title <small>(optional)</small></span>
-                <input id="case-title" type="text" value={current.title} maxLength={80} autoComplete="off" disabled={locked}
-                  onChange={(event) => changeCase({ title: event.target.value })} />
-              </label>
-              <label htmlFor="case-status">Review status
-                <select id="case-status" value={current.status} disabled={locked}
-                  onChange={(event) => changeCase({ status: event.target.value as ReviewStatus })}>
-                  {reviewStatuses.map((status) => <option key={status}>{status}</option>)}
-                </select>
-              </label>
-            </div>
             <div className="case-review-grid">
               <section className="case-image" aria-labelledby="case-image-title">
-                <h4 id="case-image-title">Research image</h4>
+                <h4 id="case-image-title">Upload Image</h4>
                 {current.image ? <CasePreview image={current.image} /> : (
                   <div className="case-preview case-preview-empty"><ImageIcon size={25} aria-hidden="true" /><p>No image attached</p></div>
                 )}
-                <label htmlFor="case-file">{current.image ? "Replace research image" : "Choose a research image"}</label>
-                <input id="case-file" type="file" accept={ACCEPTED_IMAGE_TYPES} aria-describedby="case-file-hint" disabled={locked}
+                <input id="case-file" className="sr-only case-file-input" type="file" accept={ACCEPTED_IMAGE_TYPES}
+                  aria-describedby="case-file-hint" disabled={locked}
                   onChange={(event) => {
                     const file = event.currentTarget.files?.[0];
                     event.currentTarget.value = "";
                     if (file) void upload(file);
                   }} />
-                <p id="case-file-hint">JPEG or PNG up to 10 MB. The saved preview omits the original name and metadata.</p>
-                {current.image && <button type="button" className="text-link" disabled={locked} onClick={() => changeCase({ image: null })}>Remove image</button>}
+                <label htmlFor="case-file" className="button button-secondary case-file-picker">
+                  <Upload size={17} aria-hidden="true" /> {current.image ? "Replace image" : "Choose image"}
+                </label>
+                <p id="case-file-hint">JPEG or PNG up to 10 MB. The image stays in this browser.</p>
+                <div className="button-row case-image-actions">
+                  <button type="button" className="button button-secondary" disabled aria-describedby="case-analysis-status">Analyze Image</button>
+                  {current.image && <button type="button" className="text-link" disabled={locked} onClick={() => changeCase({ image: null })}>Remove image</button>}
+                </div>
               </section>
+              <section className="case-analysis" aria-labelledby="case-analysis-title">
+                <h4 id="case-analysis-title">Analysis Result</h4>
+                <div className="case-ai-status" id="case-analysis-status">
+                  <ScanLine size={22} aria-hidden="true" />
+                  <div>
+                    <strong>Analysis unavailable</strong>
+                    <p>You can still review the image and save your observations below.</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+            <section className="case-human-review" aria-labelledby="case-review-title">
+              <h4 id="case-review-title">Human Review</h4>
+              <div className="case-fields">
+                <label htmlFor="case-title"><span>Fictional case title <small>(optional)</small></span>
+                  <input id="case-title" type="text" value={current.title} maxLength={80} autoComplete="off" disabled={locked}
+                    onChange={(event) => changeCase({ title: event.target.value })} />
+                </label>
+                <label htmlFor="case-status">Review status
+                  <select id="case-status" value={current.status} disabled={locked}
+                    onChange={(event) => changeCase({ status: event.target.value as ReviewStatus })}>
+                    {reviewStatuses.map((status) => <option key={status}>{status}</option>)}
+                  </select>
+                </label>
+              </div>
               <div className="case-notes">
-                <label htmlFor="case-notes">Human review observations</label>
+                <label htmlFor="case-notes">Your observations</label>
                 <textarea id="case-notes" rows={7} maxLength={4000} value={current.notes} disabled={locked} autoComplete="off"
                   aria-describedby="case-notes-hint" placeholder="Record what you see in the research image."
                   onChange={(event) => changeCase({ notes: event.target.value })} />
-                <p id="case-notes-hint">Reviewer-entered research notes. Avoid patient details and diagnostic conclusions.</p>
+                <p id="case-notes-hint">Describe what you see without patient details or diagnostic conclusions.</p>
               </div>
-            </div>
-            <div className="case-ai-status">
-              <FlaskConical size={19} aria-hidden="true" />
-              <p><strong>AI result unavailable for this case.</strong> Case images stay in the browser. <a className="text-link" href="#research-demo">Explore the published research comparison</a>.</p>
-            </div>
+            </section>
             <footer className="case-actions">
               <div className="button-row">
                 <button type="submit" className="button button-primary" disabled={locked || !edits || refreshNeeded}>Save changes</button>
                 <button type="button" className="button button-secondary" disabled={locked || Boolean(edits) || refreshNeeded}
-                  aria-describedby="case-export-hint" onClick={download}><Download size={18} aria-hidden="true" /> Download PDF</button>
+                  aria-describedby="case-export-hint" onClick={download}><Download size={18} aria-hidden="true" /> Download Report</button>
               </div>
-              <p id="case-export-hint">Save your review before exporting. Downloaded files are managed separately from browser cases.</p>
+              <p id="case-export-hint">Save your review before downloading the PDF. Deleting a case leaves downloaded reports on your device.</p>
               <button type="button" className="button button-secondary case-delete" disabled={locked}
                 onClick={() => { void removeCase(current.id); }}><Trash2 size={16} aria-hidden="true" /> Delete case</button>
             </footer>
@@ -276,7 +299,7 @@ export function DemoCaseWorkspace() {
           <div className="panel case-empty">
             <span className="icon-tile"><FolderOpen size={24} aria-hidden="true" /></span>
             <h3>Ready for a demo review</h3>
-            <p>Create a case to attach an image, record observations, and save your review.</p>
+            <p>Create a case to get started.</p>
           </div>
         )}
       </div>

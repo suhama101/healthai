@@ -91,7 +91,7 @@ export function ResearchDemo({ methods, samples }: {
               <ImageOff size={30} strokeWidth={1.5} aria-hidden="true" />
               <h4>Sample results unavailable</h4>
               <p>Development images and their paired predictions are pending public release clearance.</p>
-              <a className="text-link" href="#upload-preview">Preview your own de-identified image</a>
+              <Link className="text-link" href="/workspace#demo-cases">Review a de-identified image in the Workspace</Link>
             </div>
           )}
         </section>
@@ -121,7 +121,7 @@ export function ResearchDemo({ methods, samples }: {
               </dl>
             </div>
           )}
-          <Link className="text-link" href="/research#comparison">View the full benchmark and methodology</Link>
+          <a className="text-link" href="#comparison">View the full benchmark and methodology</a>
         </section>
       </div>
     </section>

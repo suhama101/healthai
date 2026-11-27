@@ -1,8 +1,8 @@
 # Public Workspace research demonstration
 
-The Workspace lets visitors compare the published Standard CLIP, Knowledge-guided CLIP, and Supervised CLIP + Ridge results in a browser. The three methods use OpenAI CLIP ViT-B/32 and the same locked-test cohort. The Workspace displays aggregate metrics directly from [the published experiment results](../research/step-3-results.json). The supervised ridge classifier was selected on validation. The knowledge-guided prompt experiment is distinct from the KPL work cited as future research. [Research protocol and results](../research/step-3.md)
+The Step 1 Workspace revision moves interactive comparison to `/research#research-demo`. Visitors can compare the published Standard CLIP, Knowledge-guided CLIP, and Supervised CLIP + Ridge results. The three methods use OpenAI CLIP ViT-B/32 and the same locked-test cohort. The comparison displays aggregate metrics directly from [the published experiment results](../research/step-3-results.json). The supervised ridge classifier was selected on validation. The knowledge-guided prompt experiment is distinct from the KPL work cited as future research. [Research protocol and results](../research/step-3.md)
 
-A frontend built with `NEXT_PUBLIC_MEDILENS_API_URL` unset serves the demonstration and browser-local upload preview without FastAPI or model weights. With a configured, ready service, the existing Analyze button continues to request an inference result for the selected upload. The upload section is available at `/workspace#upload-preview`.
+The case workflow at `/workspace#demo-cases` runs entirely in the browser with Analyze Image disabled. The separate model demo is at `/research#upload-preview`. It supports preview without FastAPI and enables its Analyze button when the configured, verified local service is ready and a valid image is selected.
 
 ## Example release status
 

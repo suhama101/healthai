@@ -1,32 +1,24 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { DemoCaseWorkspace } from "@/components/demo-case-workspace";
 import { PageIntro, ResearchNotice } from "@/components/research-info";
-import { ResearchDemo } from "@/components/research-demo";
-import { ScreeningWorkspace } from "@/components/screening-workspace";
-import { demoSamples, publishedMethods } from "@/lib/research-demo";
 
 export const metadata: Metadata = { title: "Laboratory Workspace" };
 
 export default function WorkspacePage() {
   return (
-    <>
-      <PageIntro label="Research workflow prototype" title="Laboratory Workspace">
-        Review de-identified research images in fictional demo cases, save human observations, and export a PDF.
+    <div className="laboratory-workspace">
+      <PageIntro label="Research and education only" title="Laboratory Workspace">
+        Review a research image, save your observations, and download a report.
       </PageIntro>
       <div className="container inner-content">
         <nav className="research-nav" aria-label="Workspace sections">
           <a href="#demo-cases">Demo cases</a>
-          <a href="#research-demo">Research demonstration</a>
-          <a href="#upload-preview">Upload preview</a>
+          <Link id="research-demo" href="/research#research-demo">Research comparison</Link>
         </nav>
         <DemoCaseWorkspace />
-        <ResearchDemo methods={publishedMethods} samples={demoSamples} />
-        <section id="upload-preview" aria-labelledby="upload-preview-title">
-          <h2 id="upload-preview-title" tabIndex={-1}>Upload preview</h2>
-          <ScreeningWorkspace />
-        </section>
         <ResearchNotice />
       </div>
-    </>
+    </div>
   );
 }

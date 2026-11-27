@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { ArrowDown, ArrowRight, Binary, FlaskConical, Focus, Image as ImageIcon, SlidersHorizontal } from "lucide-react";
 import { PageIntro } from "@/components/research-info";
+import { ResearchDemo } from "@/components/research-demo";
+import { ScreeningWorkspace } from "@/components/screening-workspace";
+import { demoSamples, publishedMethods } from "@/lib/research-demo";
 import evidence from "@/research/step-3-results.json";
 
 export const metadata: Metadata = { title: "Research & Methodology" };
@@ -49,8 +52,10 @@ export default function Research() {
         <nav className="research-nav" aria-label="Research sections">
           <a href="#results">Results</a>
           <a href="#comparison">Model comparison</a>
+          <a href="#research-demo">Interactive comparison</a>
           <a href="#methodology">Methodology</a>
           <a href="#limitations">Limitations</a>
+          <a href="#upload-preview">Local model demo</a>
         </nav>
         <section aria-labelledby="results">
           <h2 id="results">Locked-test results</h2>
@@ -109,6 +114,8 @@ export default function Research() {
           </section>
         </div>
 
+        <ResearchDemo methods={publishedMethods} samples={demoSamples} />
+
         <section className="panel evidence-panel" aria-labelledby="methodology">
           <h2 id="methodology">Methodology and model selection</h2>
           <ol className="method-flow">
@@ -154,6 +161,14 @@ export default function Research() {
             <li><a className="text-link" href="https://www.cdc.gov/dpdx/malaria/">CDC morphology reference</a></li>
             <li><a className="text-link" href="https://arxiv.org/abs/2501.11231">KPL paper (future research)</a></li>
           </ul>
+        </section>
+
+        <section className="local-model-demo" id="upload-preview" aria-labelledby="upload-preview-title">
+          <div>
+            <h2 id="upload-preview-title">Local model demo</h2>
+            <p>Use authorized, de-identified research images with the prepared local model service.</p>
+          </div>
+          <ScreeningWorkspace />
         </section>
       </div>
     </>

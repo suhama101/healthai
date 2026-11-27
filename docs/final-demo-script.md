@@ -6,7 +6,7 @@ Capital Youth Expo 2026 · Healthcare track · Target **1:55**, including the cl
 | --- | --- | --- |
 | 0:00–0:15 | Show the public Vercel address. Select **Try the Demo**, then **Demo cases**. | “MediLens AI is a laboratory workflow prototype for reviewing research images. This is the public site. The case workflow runs in this browser.” |
 | 0:15–0:34 | Create a case. Show the generated ID and attach a synthetic non-medical PNG. | “The browser creates a fictional case ID and timestamp. I’m attaching a synthetic image. Its preview stays in this browser.” |
-| 0:34–0:50 | Enter a short fictional observation. Select **Reviewed**, save, and start the PDF download. | “These are my observations. I’ll mark the case Reviewed and save it. The PDF records the notes and review status. AI analysis is unavailable for this case.” |
+| 0:34–0:50 | Under **Human Review**, enter a short fictional observation. Select **Reviewed**, save, and choose **Download Report**. | “These are my observations. I’ll mark the case Reviewed and save it. The PDF records the notes and review status. AI analysis is unavailable for this case.” |
 | 0:50–1:15 | Use one segment below. | Use its matching narration. |
 | 1:15–1:42 | Return to the public **Research** page. Point to the selected model’s summary and confusion matrix. | “We fitted ridge on development data and selected the model on validation. On 384 locked-test crops, it reached 95.05 percent accuracy. It missed 11 parasitized crops and flagged eight uninfected crops. This benchmark covers cell crops from one collection.” |
 | 1:42–1:55 | Show the research-only notice and a readable end card with the project and repository. | “MediLens is for research and education. The source documents the methods, their limitations, and the pretrained models, data, and AI assistance we used.” |
@@ -17,7 +17,7 @@ Show the report briefly, reload the site to show the case remains, then open the
 
 ### 0:50–1:15 optional genuine local inference segment
 
-Use a separate browser window. Show the loopback URL and keep the overlay **Local inference on this laptop** visible for the entire clip. Preload the cleared crop in preview, click **Analyze** in the recorded take, and show the returned class, model name, and raw scores. Say “I’ve switched to the local copy. Analyze sends this cleared crop to FastAPI on this laptop. Frozen CLIP and ridge have just returned [read the class on screen]. These are raw scores. Online inference remains disabled on our public site.”
+Use the Research page’s **Local model demo** in a separate browser window. Show the loopback URL and keep the overlay **Local inference on this laptop** visible for the entire clip. Preload the cleared crop in preview, click **Analyze** in the recorded take, and show the returned class, model name, and raw scores. Say “I’ve switched to the local model demo. Analyze sends this cleared crop to FastAPI on this laptop. Frozen CLIP and ridge have just returned [read the class on screen]. These are raw scores. Online inference remains disabled on our public site.”
 
 ## Recording and delivery checklist
 
