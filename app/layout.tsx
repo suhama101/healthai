@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { nlmSiteDemoEnabled } from "@/lib/nlm-demo-release";
 import "./globals.css";
+import "./product.css";
 
 export const metadata: Metadata = {
-  title: { default: "MediLens AI | Malaria Cell Screening Research", template: "%s | MediLens AI" },
-  description: "A malaria cell classification research prototype for the Capital Youth Expo 2026 Healthcare Hackathon.",
+  title: { default: "MediLens AI | Malaria Cell Analysis", template: "%s | MediLens AI" },
+  description: "An interactive research demonstration of AI-assisted malaria cell analysis using two included microscopy images.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

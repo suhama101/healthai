@@ -9,9 +9,9 @@ export const workflow = [
 ];
 
 export const sampleWorkflow = [
-  { title: "Choose a sample", description: "Select one of the two included blood-cell images.", icon: Images },
-  { title: "Analyze the sample", description: "The model runs on that image when you click Analyze.", icon: ScanLine },
-  { title: "Read the finding", description: "See the cell classification and a short research explanation.", icon: FlaskConical },
+  { title: "Select a sample image", description: "Choose one of the two included blood-cell images.", icon: Images },
+  { title: "Click Analyze", description: "Run the AI model on the selected sample.", icon: ScanLine },
+  { title: "View the finding", description: "Read the cell finding and a short medical explanation.", icon: FlaskConical },
 ];
 
 export function PageIntro({ label, title, children }: { label: string; title: string; children: ReactNode }) {

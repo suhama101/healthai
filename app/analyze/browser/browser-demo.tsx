@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { LoaderCircle, Microscope, ScanLine } from "lucide-react";
 import { malariaDescriptionBank } from "@/lib/local-malaria-descriptions";
 
 const assets = "/nlm-browser/v1";
@@ -110,51 +111,66 @@ export function BrowserDemo({ samples, modelSha256 }: { samples: Sample[]; model
   }
 
   const explanation = outcome.state === "ready" ? malariaDescriptionBank.entries[outcome.finding] : null;
+  const analysisFailed = outcome.state === "error" || outcome.state === "timeout";
   return (
-    <section className="card p-5 space-y-3">
-      <label htmlFor="browser-sample" className="block font-semibold">Research sample</label>
-      <select id="browser-sample" className="rounded border p-2" value={index} onChange={(event) => {
-        clearPending();
-        setOutcome({ state: "idle" });
-        setPreview({ state: "loading" });
-        setIndex(Number(event.target.value));
-      }}>
-        {samples.map(({ id, title }, i) => <option key={id} value={i}>{title}</option>)}
-      </select>
-      {preview.state === "loading" && <p role="status">Loading sample…</p>}
-      {preview.state === "error" && (
-        <div>
-          <p role="alert">Sample unavailable.</p>
+    <div className="product-analysis-grid">
+      <section className="product-input-card" aria-label="Sample selection and preview">
+        <label htmlFor="browser-sample">Research sample</label>
+        <select id="browser-sample" value={index} onChange={(event) => {
+          clearPending();
+          setOutcome({ state: "idle" });
+          setPreview({ state: "loading" });
+          setIndex(Number(event.target.value));
+        }}>
+          {samples.map(({ id, title }, i) => <option key={id} value={i}>{title}</option>)}
+        </select>
+        <figure className="product-cell-preview">
+          {preview.state === "loading" && <p role="status">Loading sample…</p>}
+          {preview.state === "error" && <p role="alert">Sample unavailable.</p>}
+          {preview.state === "ready" && (
+            // The verified image uses a browser-local blob URL.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={preview.url} alt={`Red blood cell crop for ${sample.title}`} width={264} height={264} />
+          )}
+        </figure>
+        {preview.state === "error" ? (
           <button type="button" className="button button-secondary" onClick={() => {
             setPreview({ state: "loading" });
             setAttempt((value) => value + 1);
           }}>Retry sample</button>
-        </div>
-      )}
-      {preview.state === "ready" && (
-        // The verified image uses a browser-local blob URL.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={preview.url} alt={`Red blood cell crop for ${sample.title}`} width={176} height={176} className="rounded border" />
-      )}
-      <div>
-        <button type="button" className="button button-primary" onClick={analyze}
-          disabled={preview.state !== "ready" || outcome.state === "running"}>
-          {outcome.state === "running" ? "Analyzing…" : "Analyze sample"}
-        </button>
-      </div>
-      <div aria-live="polite">
-        {outcome.state === "error" && <p>Analysis unavailable in this browser. Try again.</p>}
-        {outcome.state === "timeout" && <p>Analysis timed out. Try again.</p>}
-        {explanation && (
-          <>
-            <h2 className="text-lg font-semibold">{explanation.title}</h2>
-            <p>{explanation.description}</p>
-            <ul className="mt-2">
-              {explanation.sources.map((source) => <li key={source.url}><a href={source.url}>{source.label}</a></li>)}
-            </ul>
-          </>
+        ) : (
+          <button type="button" className="button button-primary" onClick={analyze}
+            disabled={preview.state !== "ready" || outcome.state === "running"}>
+            {outcome.state === "running"
+              ? <><LoaderCircle size={18} className="product-spinner" aria-hidden="true" /> Analyzing…</>
+              : <><ScanLine size={18} aria-hidden="true" /> {analysisFailed ? "Retry analysis" : "Analyze sample"}</>}
+          </button>
         )}
-      </div>
-    </section>
+      </section>
+      <section className="product-result-card" aria-labelledby="product-result-title">
+        <div className="product-result-heading">
+          <span className="icon-tile"><Microscope size={22} aria-hidden="true" /></span>
+          <h2 id="product-result-title">Cell finding</h2>
+        </div>
+        <div className="product-result-body" aria-live="polite">
+          {outcome.state === "idle" && <p>The model finding and its explanation will appear here after analysis.</p>}
+          {outcome.state === "running" && <p>Analyzing {sample.title.toLowerCase()} on your device…</p>}
+          {analysisFailed && (
+            <p className="product-analysis-error">
+              {outcome.state === "timeout" ? "Analysis timed out. Try again." : "Analysis unavailable in this browser. Try again."}
+            </p>
+          )}
+          {explanation && (
+            <>
+              <h3>{explanation.title}</h3>
+              <p>{explanation.description}</p>
+              <ul className="product-result-sources">
+                {explanation.sources.map((source) => <li key={source.url}><a href={source.url}>{source.label}</a></li>)}
+              </ul>
+            </>
+          )}
+        </div>
+      </section>
+    </div>
   );
 }
