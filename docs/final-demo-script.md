@@ -1,23 +1,30 @@
-# MediLens AI two-minute walkthrough
+# MediLens AI video walkthrough
 
-Capital Youth Expo 2026 · Healthcare Hackathon
+Capital Youth Expo 2026 · Healthcare track · Target **1:55**, including the closing card. Use the public-only segment by default. Substitute the local segment only if the exact crop and its result are cleared for the intended recording audience, including any organizer reuse.
 
-| Elapsed time | Screen | Narration |
+| Time | Screen action | Say |
 | --- | --- | --- |
-| 0:00–0:16 | Public Vercel home, then Workspace | “MediLens AI asks how well a research model can distinguish parasitized and uninfected cells in thin-smear microscopy crops. The public website lets you explore the project and preview an image. Online analysis is unavailable.” |
-| 0:16–0:31 | Local Workspace with Model ready visible | “I’ve switched to the local copy. The original CLIP experiment compared the image with class names and then with descriptions of cell morphology. Both approaches strongly favored one class.” |
-| 0:31–0:54 | Browse to a permitted de-identified development crop, preview it, then select Analyze | “This is a permitted research crop. Previewing it keeps it in this browser tab. Analyze sends it to FastAPI on this laptop, where the frozen CLIP encoder and fitted ridge classifier process it.” |
-| 0:54–1:12 | Hold on the genuine result panel | “The model returned [read the displayed class]. These are the two raw relative scores [point to both]. The higher score determines the research class. The values have no diagnostic probability interpretation.” |
-| 1:12–1:37 | Research cards, comparison bars and confusion matrix | “On the same 384 held-out crops, class names reached 50% accuracy and CLIP ridge reached 95.05%. It missed 11 parasitized crops and flagged eight uninfected crops. We selected it for weaker-class recall on validation. BiomedCLIP ridge scored higher on the later locked test.” |
-| 1:37–1:53 | Limitations and Research sources | “This is one public cell-crop collection. The groups were separated using released identifiers, with incomplete verification of patient independence. The system is for research and education and has no clinical validation.” |
-| 1:53–1:59 | Research sources and public GitHub | “The public repository documents the method, measured failures and reproducible comparison.” |
+| 0:00–0:15 | Show the public Vercel address. Select **Try the Demo**, then **Demo cases**. | “MediLens AI is a laboratory workflow prototype for reviewing research images. This is the public site. The case workflow runs in this browser.” |
+| 0:15–0:34 | Create a case. Show the generated ID and attach a synthetic non-medical PNG. | “The browser creates a fictional case ID and timestamp. I’m attaching a synthetic image. Its preview stays in this browser.” |
+| 0:34–0:50 | Enter a short fictional observation. Select **Reviewed**, save, and start the PDF download. | “These are my observations. I’ll mark the case Reviewed and save it. The PDF records the notes and review status. AI analysis is unavailable for this case.” |
+| 0:50–1:15 | Use one segment below. | Use its matching narration. |
+| 1:15–1:42 | Return to the public **Research** page. Point to the selected model’s summary and confusion matrix. | “We fitted ridge on development data and selected the model on validation. On 384 locked-test crops, it reached 95.05 percent accuracy. It missed 11 parasitized crops and flagged eight uninfected crops. This benchmark covers cell crops from one collection.” |
+| 1:42–1:55 | Show the research-only notice and a readable end card with the project and repository. | “MediLens is for research and education. The source documents the methods, their limitations, and the pretrained models, data, and AI assistance we used.” |
 
-## Recording checklist
+### 0:50–1:15 public-only segment
 
-- Queue tabs in this order. Public Workspace, local Workspace and local Research. Keep the public and loopback addresses visible when switching.
-- Verify the local release and start FastAPI and Next.js using the [offline setup](submission-demo.md#before-recording-or-presenting). Confirm `/health` reports `ready`, `clip-ridge` and the pinned CLIP revision before recording.
-- Stage the permitted de-identified development crops locally under `.medilens/release/`. Start with `demo-parasitized.png` and keep `demo-uninfected.png` available for rehearsal. Keep private file paths, raw identifiers and unrelated windows out of frame.
-- Rehearse the actual upload and Analyze flow, then clear the workspace before capturing a fresh run. Read the class from the live result panel, show the model and both scores, and check the public Workspace still has Analyze disabled.
-- Review the exported recording for audible narration, readable labels, accurate hosting disclosure and a runtime under two minutes. Keep the original capture available for the jury demo.
+Show the report briefly, reload the site to show the case remains, then open the Research demonstration. Say “The saved case reopens after a refresh. This report is for research only. You can also compare published methods on the same locked test. Those results were computed before this demo. The public sample panel is unavailable.”
 
-[Verified Step 3 comparison](../research/step-3.md) · [Public frontend](https://healthai-lyart.vercel.app/) · [Public source](https://github.com/suhama101/healthai)
+### 0:50–1:15 optional genuine local inference segment
+
+Use a separate browser window. Show the loopback URL and keep the overlay **Local inference on this laptop** visible for the entire clip. Preload the cleared crop in preview, click **Analyze** in the recorded take, and show the returned class, model name, and raw scores. Say “I’ve switched to the local copy. Analyze sends this cleared crop to FastAPI on this laptop. Frozen CLIP and ridge have just returned [read the class on screen]. These are raw scores. Online inference remains disabled on our public site.”
+
+## Recording and delivery checklist
+
+- Use a clean browser profile with notifications off and readable zoom. Check the public home, Workspace, and Research page immediately before recording. Rehearse case creation, a synthetic image upload, save, and PDF download. Use only fictional details in the public recording.
+- For local footage, verify the exact release and warm the laptop using the [local runbook](submission-demo.md#before-recording-or-presenting). Keep the pinned revision, model-ready state, and loopback address legible. Confirm the expected method in rehearsal.
+- Verify permission for the crop and its presentation in the exported clip. Keep local-only development images, dataset identifiers, filenames with identifiers, credentials, private paths, and unrelated windows out of the recording. Use the public-only segment if any approval is missing or the model is unavailable. Keep local demonstration images out of the public submission files.
+- Record the actual result in one take. Clearly label any genuine prerecorded local take if replayed live. Read only what the panel actually displays. Avoid showing or implying diagnostic probabilities.
+- Caption the split between public and local footage. Play back the exported artifact and verify readable text, intelligible audio, and a complete runtime of **2:00 or less**. Open the submitted video link in a signed-out browser or check the uploaded file as the jury will receive it.
+
+[Public frontend](https://healthai-lyart.vercel.app/) · [Source](https://github.com/suhama101/healthai) · [Research results](../research/step-3.md)

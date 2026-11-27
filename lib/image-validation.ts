@@ -6,22 +6,27 @@ const signatures: Record<string, readonly number[]> = {
   "image/jpeg": [0xff, 0xd8, 0xff],
 };
 
-export async function validateImage(file: File): Promise<string | null> {
-  if (file.size === 0) return "This file is empty.";
-  if (file.size > MAX_IMAGE_BYTES) return "Choose an image no larger than 10 MB.";
+export async function decodeResearchImage(file: File): Promise<{ bitmap: ImageBitmap } | { error: string }> {
+  if (file.size === 0) return { error: "This file is empty." };
+  if (file.size > MAX_IMAGE_BYTES) return { error: "Choose an image no larger than 10 MB." };
 
   const signature = signatures[file.type];
-  if (!signature) return "Choose a JPEG or PNG image.";
+  if (!signature) return { error: "Choose a JPEG or PNG image." };
 
   try {
     const bytes = new Uint8Array(await file.slice(0, signature.length).arrayBuffer());
     if (!signature.every((byte, index) => bytes[index] === byte)) {
-      return "The file contents do not match its image type.";
+      return { error: "The file contents do not match its image type." };
     }
-    const bitmap = await createImageBitmap(file);
-    bitmap.close();
-    return null;
+    return { bitmap: await createImageBitmap(file) };
   } catch {
-    return "This image could not be read. Choose another JPEG or PNG.";
+    return { error: "This image could not be read. Choose another JPEG or PNG." };
   }
+}
+
+export async function validateImage(file: File): Promise<string | null> {
+  const image = await decodeResearchImage(file);
+  if ("error" in image) return image.error;
+  image.bitmap.close();
+  return null;
 }
