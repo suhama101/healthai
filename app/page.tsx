@@ -1,4 +1,4 @@
-import { ArrowRight, Microscope, ShieldCheck, Upload } from "lucide-react";
+import { ArrowRight, Building2, FlaskConical, GraduationCap, Microscope, Route, ShieldCheck, Upload } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { sampleWorkflow } from "@/components/research-info";
@@ -88,6 +88,54 @@ export default function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="container product-section product-impact" aria-labelledby="impact-heading">
+        <div className="product-section-heading product-section-heading-wide">
+          <div>
+            <p className="eyebrow">Why MediLens AI Matters</p>
+            <h2 id="impact-heading">A practical way to study a focused microscopy task</h2>
+          </div>
+          <p className="product-section-lede">
+            Malaria microscopy is learned through careful image interpretation. MediLens AI turns one bounded,
+            research-only cell classification task into an interactive example that can be explored with supervision.
+          </p>
+        </div>
+        <div className="product-impact-grid">
+          <article className="product-impact-item">
+            <span className="icon-tile"><GraduationCap size={22} aria-hidden="true" /></span>
+            <h3>Medical students</h3>
+            <p>Practice connecting a prepared cell image to a model finding and a plain-language research explanation.</p>
+          </article>
+          <article className="product-impact-item">
+            <span className="icon-tile"><FlaskConical size={22} aria-hidden="true" /></span>
+            <h3>Microscopy researchers</h3>
+            <p>Inspect a reproducible browser workflow with a pinned model, explicit input contract, and transparent limitations.</p>
+          </article>
+          <article className="product-impact-item">
+            <span className="icon-tile"><Building2 size={22} aria-hidden="true" /></span>
+            <h3>Diagnostic laboratories</h3>
+            <p>Evaluate the prototype in supervised research settings before considering any broader laboratory workflow.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="product-feasibility" aria-labelledby="feasibility-heading">
+        <div className="container product-feasibility-inner">
+          <div className="product-feasibility-copy">
+            <p className="eyebrow">Practical Feasibility</p>
+            <h2 id="feasibility-heading">The core experience is already working</h2>
+            <p>
+              This public prototype demonstrates the complete browser loop on supported prepared crops. It is designed
+              to be inspected, tested, and improved before any claim of clinical use.
+            </p>
+          </div>
+          <ul className="product-feasibility-list">
+            <li><Route size={20} aria-hidden="true" /><span><strong>Browser-local inference</strong>LiteRT.js runs the pinned NIH/NLM model on the visitor&apos;s device.</span></li>
+            <li><ShieldCheck size={20} aria-hidden="true" /><span><strong>Honest input boundaries</strong>Unsupported dimensions, formats, metadata, and masks are rejected before analysis.</span></li>
+            <li><Upload size={20} aria-hidden="true" /><span><strong>Private by design</strong>The current upload workflow keeps image contents in the browser and does not depend on a paid cloud inference API.</span></li>
+          </ul>
+        </div>
       </section>
     </>
   );
