@@ -161,6 +161,31 @@
 }
 .product-analysis-notice svg { margin-top: .12rem; }
 .product-spinner { animation: product-spin 1s linear infinite; }
+
+.product-upload {
+  margin-top: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: .9rem;
+  background: white;
+}
+.product-upload summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .65rem;
+  padding: .9rem 1.1rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--teal-dark);
+}
+.product-upload summary small { font-size: .82rem; font-weight: 500; color: var(--muted); }
+.product-upload-content { display: grid; gap: .7rem; padding: 0 1rem 1rem; }
+.product-upload-content > p { color: var(--muted); }
+.product-upload input[type="file"] { width: 100%; min-width: 0; font-size: .9rem; }
+.product-upload input::file-selector-button { margin-inline-end: .45rem; cursor: pointer; }
+.product-upload-confirm { display: flex; align-items: start; gap: .55rem; font-size: .9rem; }
+.product-upload-confirm input { width: 1.1rem; height: 1.1rem; flex: none; margin-top: .17rem; accent-color: var(--teal-dark); }
+
 @keyframes product-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .product-spinner { animation: none; } }
 

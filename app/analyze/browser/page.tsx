@@ -4,6 +4,7 @@ import { ShieldCheck } from "lucide-react";
 import { malariaDescriptionBank } from "@/lib/local-malaria-descriptions";
 import release from "@/research/nlm-fixed-sample-release.json";
 import { BrowserDemo } from "./browser-demo";
+import { CustomUpload } from "./custom-upload";
 
 export const metadata: Metadata = { title: "Analyze a Sample in Your Browser" };
 
@@ -12,6 +13,7 @@ export default function BrowserAnalyzePage() {
     (process.env.NODE_ENV !== "development" && process.env.NLM_BROWSER_DEMO_ENABLED !== "1")
     || release.descriptionBank !== malariaDescriptionBank.version
   ) notFound();
+  const customUploadEnabled = process.env.NLM_BROWSER_CUSTOM_UPLOAD !== "0";
 
   return (
     <section className="product-analysis-page">
@@ -21,9 +23,13 @@ export default function BrowserAnalyzePage() {
           <p>Choose one of the two included samples. Analyze runs the model on your device.</p>
         </div>
         <BrowserDemo modelSha256={release.model.sha256} samples={release.samples} />
+        {customUploadEnabled && <CustomUpload modelSha256={release.model.sha256} />}
         <aside className="product-analysis-notice" aria-label="Research use">
           <ShieldCheck size={19} aria-hidden="true" />
-          <p><strong>Research use only.</strong> The finding describes one cell and cannot diagnose malaria in a person. This demo accepts only the included images.</p>
+          <p>
+            <strong>Research use only.</strong> Findings describe one cell and are not for diagnosis or patient care.
+            {!customUploadEnabled && " This demo accepts only the included images."}
+          </p>
         </aside>
         <p className="product-credits">
           Source: U.S. National Library of Medicine. The samples were extracted, masked, and resized.
