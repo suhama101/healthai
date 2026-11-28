@@ -40,7 +40,7 @@
   text-wrap: balance;
 }
 .product-hero-copy h1 span { color: var(--teal-dark); }
-.product-hero-copy > p:not(.product-scope) {
+.product-hero-copy > p:not(.product-scope):not(.eyebrow) {
   max-width: 36rem;
   margin-block: 1.15rem 1.5rem;
   font-size: clamp(1.04rem, 2vw, 1.2rem);
@@ -58,7 +58,7 @@
 .product-scope svg, .product-analysis-notice svg { flex: none; color: var(--teal-dark); }
 .product-muted { align-self: center; color: var(--muted); font-size: .9rem; }
 
-.product-preview, .product-input-card, .product-result-card {
+.product-preview, .product-upload-hero-panel, .product-input-card, .product-result-card {
   padding: clamp(1rem, 2.5vw, 1.6rem);
   border: 1px solid var(--line);
   border-radius: 1.1rem;
@@ -67,6 +67,45 @@
 }
 .product-preview-heading, .product-result-heading { display: flex; align-items: center; gap: .75rem; }
 .product-preview-heading h2 { font-size: clamp(1.06rem, 2.25vw, 1.35rem); }
+.product-upload-hero-panel { align-self: stretch; }
+.product-upload-hero-note { margin-top: 1rem; color: var(--muted); font-size: .9rem; }
+.product-upload-flow {
+  display: grid;
+  gap: .65rem;
+  margin: 1rem 0 0;
+  list-style: none;
+}
+.product-upload-flow li {
+  display: flex;
+  align-items: flex-start;
+  gap: .55rem;
+  min-width: 0;
+  padding: .7rem;
+  border: 1px solid #d9e8e7;
+  border-radius: .65rem;
+  background: #f7fbfb;
+}
+.product-upload-flow li svg { flex: none; margin-top: .1rem; color: var(--teal-dark); }
+.product-upload-flow li strong, .product-upload-flow li span { display: block; }
+.product-upload-flow li span { min-width: 0; }
+.product-upload-flow li small { display: block; margin-top: .18rem; color: var(--muted); font-size: .8rem; font-weight: 400; }
+.product-upload-flow-hero { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.product-upload-flow-hero li { display: grid; gap: .18rem; }
+.product-upload-flow-hero li strong { color: var(--teal-dark); }
+.product-upload-flow-page { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-block: 0 1.5rem; }
+.product-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.product-section-heading h2, .product-section-heading h3 { margin-top: .25rem; font-size: clamp(1.35rem, 3vw, 1.9rem); }
+.product-section-heading > .text-link { flex: none; }
+.product-secondary-demo { padding-top: clamp(1.5rem, 4vw, 3rem); }
+.product-sample-preview { max-width: 42rem; }
+.product-sample-process { padding-top: 0; }
+.product-sample-section { margin-top: 1.5rem; padding-top: clamp(1.5rem, 4vw, 2.5rem); border-top: 1px solid var(--line); }
 .product-sample-gallery {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -164,21 +203,24 @@
 
 .product-upload {
   margin-top: 1.15rem;
-  border: 1px solid var(--line);
+  border: 2px solid #b8dcd7;
   border-radius: .9rem;
   background: white;
+  box-shadow: 0 12px 30px #10243b0d;
 }
 .product-upload summary {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: .65rem;
-  padding: .9rem 1.1rem;
+  padding: 1.1rem 1.2rem;
   cursor: pointer;
+  font-size: 1.1rem;
   font-weight: 700;
   color: var(--teal-dark);
 }
-.product-upload summary small { font-size: .82rem; font-weight: 500; color: var(--muted); }
+.product-upload summary small { flex-basis: 100%; font-size: .82rem; font-weight: 600; color: var(--muted); }
+.product-upload[open] summary { border-bottom: 1px solid #d9e8e7; }
 .product-upload-content { display: grid; gap: .7rem; padding: 0 1rem 1rem; }
 .product-upload-content > p { color: var(--muted); }
 .product-upload input[type="file"] { width: 100%; min-width: 0; font-size: .9rem; }
@@ -192,10 +234,14 @@
 @media (max-width: 760px) {
   .product-hero-grid, .product-analysis-grid { grid-template-columns: minmax(0, 1fr); }
   .product-preview { width: min(100%, 32rem); }
+  .product-section-heading { align-items: flex-start; flex-direction: column; }
+  .product-upload-flow-page { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .header-inner .product-nav a { padding-inline: .2rem; }
 }
 @media (max-width: 540px) {
   .product-header { flex-wrap: wrap; gap: .2rem; padding-block: .5rem; }
   .header-inner .product-nav { justify-content: space-between; gap: .6rem; width: 100%; }
   .product-process { grid-template-columns: minmax(0, 1fr); }
+  .product-upload-flow-hero, .product-upload-flow-page { grid-template-columns: minmax(0, 1fr); }
+  .product-upload summary { align-items: flex-start; }
 }

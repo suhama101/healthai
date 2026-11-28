@@ -17,8 +17,13 @@ export function CustomUpload({ modelSha256 }: { modelSha256: string }) {
   const selection = useRef(0);
   const sequence = useRef(0);
   const url = useRef<string | null>(null);
+  const disclosure = useRef<HTMLDetailsElement | null>(null);
   const worker = useRef<Worker | null>(null);
   const pending = useRef<{ id: number; timer: number } | null>(null);
+
+  useEffect(() => {
+    if (window.location.hash === "#upload-your-image") disclosure.current?.setAttribute("open", "");
+  }, []);
 
   useEffect(() => () => {
     selection.current++;
@@ -100,8 +105,8 @@ export function CustomUpload({ modelSha256 }: { modelSha256: string }) {
   const explanation = result.state === "ready" ? malariaDescriptionBank.entries[result.finding] : null;
   const retry = result.state === "error" || result.state === "timeout";
   return (
-    <details className="product-upload">
-      <summary><ImagePlus size={20} aria-hidden="true" /> Upload Your Image (Experimental) <small>Experimental Research Beta — Prepared Single-Cell Crop Required</small></summary>
+    <details className="product-upload" id="upload-your-image" ref={disclosure}>
+      <summary><ImagePlus size={22} aria-hidden="true" /> <span>Upload Your Image (Experimental)</span> <small>Experimental Research Beta — Prepared Single-Cell Crop Required</small></summary>
       <div className="product-upload-content">
         <p id="custom-format">
           Only correctly prepared 44 x 44 masked single-cell malaria RBC crops are supported.
@@ -156,7 +161,7 @@ export function CustomUpload({ modelSha256 }: { modelSha256: string }) {
               {input.state === "unsupported" ? (
                 <>
                   <h3>{malariaDescriptionBank.entries.unableToAssess.title}</h3>
-                  <p className="product-analysis-error">{input.reason}</p>
+                  <p className="product-analysis-error" role="alert">{input.reason}</p>
                 </>
               ) : explanation ? (
                 <>
